@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 function getTransport() {
   const user = process.env.GMAIL_USER;
@@ -151,6 +152,20 @@ export async function notifyAdmin(subject: string, html: string) {
       subject,
       html,
     });
+
+    // Registrar log de envío en Supabase
+    try {
+      const supabase = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      await (supabase as any).from("EmailLog").insert({
+        destinatario: to,
+        asunto: subject,
+      });
+    } catch (dbErr) {
+      console.error("Error al registrar log de email en Supabase:", dbErr);
+    }
   } catch (err) {
     console.error("Error enviando email a admin:", err);
   }

@@ -1,3 +1,5 @@
+import { logAiUsage } from "./logger";
+
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 async function createCompletion(
@@ -5,22 +7,45 @@ async function createCompletion(
   messages: { role: string; content: string }[],
   apiKey: string
 ): Promise<string> {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ model, messages }),
-  });
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ model, messages }),
+    });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`OpenRouter (${model}): ${res.status} - ${err}`);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`OpenRouter (${model}): ${res.status} - ${err}`);
+    }
+
+    const data = await res.json();
+    const prompt_tokens = data.usage?.prompt_tokens ?? 0;
+    const completion_tokens = data.usage?.completion_tokens ?? 0;
+
+    // Registrar consumo exitoso
+    await logAiUsage({
+      proveedor: "OPENROUTER",
+      modelo: model,
+      prompt_tokens,
+      completion_tokens,
+      exito: true,
+    });
+
+    return data.choices[0].message.content;
+  } catch (err: any) {
+    // Registrar consumo fallido
+    await logAiUsage({
+      proveedor: "OPENROUTER",
+      modelo: model,
+      exito: false,
+      error: err.message,
+    });
+    throw err;
   }
-
-  const data = await res.json();
-  return data.choices[0].message.content;
 }
 
 const keys = [

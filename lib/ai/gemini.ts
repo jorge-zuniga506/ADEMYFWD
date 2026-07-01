@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logAiUsage } from "./logger";
 
 const apiKey = process.env.GEMINI_API_KEY!;
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -9,17 +10,35 @@ export async function analyzeImage(
 ): Promise<string> {
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const result = await model.generateContent([
-    prompt,
-    {
-      inlineData: {
-        mimeType: "image/png",
-        data: imageBase64,
+  try {
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          mimeType: "image/png",
+          data: imageBase64,
+        },
       },
-    },
-  ]);
+    ]);
 
-  return result.response.text();
+    const text = result.response.text();
+    // Registrar consumo exitoso
+    await logAiUsage({
+      proveedor: "GEMINI",
+      modelo: "gemini-2.0-flash",
+      exito: true,
+    });
+    return text;
+  } catch (err: any) {
+    // Registrar consumo fallido
+    await logAiUsage({
+      proveedor: "GEMINI",
+      modelo: "gemini-2.0-flash",
+      exito: false,
+      error: err.message,
+    });
+    throw err;
+  }
 }
 
 export async function generateText(
@@ -31,8 +50,26 @@ export async function generateText(
     systemInstruction,
   });
 
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    // Registrar consumo exitoso
+    await logAiUsage({
+      proveedor: "GEMINI",
+      modelo: "gemini-2.0-flash",
+      exito: true,
+    });
+    return text;
+  } catch (err: any) {
+    // Registrar consumo fallido
+    await logAiUsage({
+      proveedor: "GEMINI",
+      modelo: "gemini-2.0-flash",
+      exito: false,
+      error: err.message,
+    });
+    throw err;
+  }
 }
 
 export async function verifyCertificate(
