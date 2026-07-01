@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { ai } from "@/lib/ai/client";
 import { sendEmailWithTemplate } from "@/lib/email";
 import { checkAiLimit } from "@/lib/ai/logger";
@@ -229,6 +230,8 @@ export async function askAiSupportAction(
     const ayer = new Date(hoy);
     ayer.setDate(ayer.getDate() - 1);
 
+    const adminDb = createAdminClient();
+
     const [
       { count: usuariosHoy },
       { count: usuariosAyer },
@@ -243,8 +246,8 @@ export async function askAiSupportAction(
       supabase.from("User").select("*", { count: "exact", head: true }).gte("createdAt", ayer.toISOString()).lt("createdAt", hoy.toISOString()),
       supabase.from("Course").select("*", { count: "exact", head: true }).eq("estado", "PUBLICADO"),
       supabase.from("Course").select("*", { count: "exact", head: true }).eq("estado", "EN_REVISION"),
-      (supabase as any).from("EmailLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
-      (supabase as any).from("AiLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
+      adminDb.from("EmailLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
+      adminDb.from("AiLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
       supabase.from("User").select("*", { count: "exact", head: true }),
       supabase.from("Enrollment").select("*", { count: "exact", head: true }),
     ]);

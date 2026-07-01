@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { DollarSign, TrendingUp, Users, ShieldCheck, Mail, Cpu } from "lucide-react";
 import PayoutList from "@/components/PayoutList";
 
@@ -8,7 +9,14 @@ export const revalidate = 0;
 
 export default async function FinancieroPage() {
   const supabase = await createClient();
+  // Cliente admin (SERVICE_ROLE_KEY) para bypasear RLS en tablas de logs
+  const adminDb = createAdminClient();
 
+  // Inicio del día en UTC para el filtro de hoy
+  const inicioHoy = new Date();
+  inicioHoy.setHours(0, 0, 0, 0);
+
+  // Queries con cliente normal (usa sesión del usuario, sujeto a RLS)
   const { count: totalCursos } = await supabase
     .from("Course")
     .select("*", { count: "exact", head: true })
@@ -18,11 +26,8 @@ export default async function FinancieroPage() {
     .from("User")
     .select("*", { count: "exact", head: true });
 
-  // Calcular límite de correos diarios de Gmail (límite 500)
-  const inicioHoy = new Date();
-  inicioHoy.setHours(0, 0, 0, 0);
-
-  const { count: correosEnviadosHoy } = await (supabase as any)
+  // Queries con cliente ADMIN (SERVICE_ROLE_KEY) → bypasea RLS en tablas de logs
+  const { count: correosEnviadosHoy } = await adminDb
     .from("EmailLog")
     .select("*", { count: "exact", head: true })
     .gte("fecha", inicioHoy.toISOString());
@@ -31,13 +36,13 @@ export default async function FinancieroPage() {
   const limiteEmails = 500;
   const porcentajeEmails = Math.min((totalEmailsHoy / limiteEmails) * 100, 100);
 
-  // Calcular consumo de IA diario
-  const { count: peticionesIaHoy } = await (supabase as any)
+  // Consumo de IA diario
+  const { count: peticionesIaHoy } = await adminDb
     .from("AiLog")
     .select("*", { count: "exact", head: true })
     .gte("fecha", inicioHoy.toISOString());
 
-  const { data: logsIaHoy } = await (supabase as any)
+  const { data: logsIaHoy } = await adminDb
     .from("AiLog")
     .select("proveedor")
     .gte("fecha", inicioHoy.toISOString());
