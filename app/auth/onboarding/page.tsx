@@ -43,7 +43,7 @@ const PROPOSITOS = [
 const COMO_NOS_CONOCIO = [
   { value: "redes_sociales", label: "Redes sociales" },
   { value: "amigo", label: "Me lo recomendó un amigo" },
-  { value: "fwd_comunidad", label: "Comunidad FWD" },
+  { value: "fwd_comunidad", label: "Comunidad U-Forward" },
   { value: "google", label: "Búsqueda en Google" },
   { value: "otro", label: "Otro" },
 ];
@@ -92,6 +92,25 @@ export default function OnboardingPage() {
       if (!user) { router.push("/auth/login"); return; }
       setUserId(user.id);
       setUserEmail(user.email ?? "");
+
+      // Auto-onboard admin accounts
+      const isAdmin = user.email?.startsWith("admin@");
+      if (isAdmin) {
+        const { error } = await supabase.from("User").upsert({
+          id: user.id,
+          nombre: user.user_metadata?.full_name ?? user.user_metadata?.name ?? "Admin",
+          email: user.email,
+          passwordHash: "",
+          rol: "ADMIN",
+          onboardingDone: true,
+        });
+        if (!error) {
+          router.push("/dashboard");
+          router.refresh();
+          return;
+        }
+      }
+
       // Pre-fill nombre from Google metadata
       const displayName = user.user_metadata?.full_name ?? user.user_metadata?.name ?? "";
       if (displayName) setNombre(displayName);
@@ -192,7 +211,7 @@ export default function OnboardingPage() {
             <div className="space-y-6 animate-fade-in">
               <div className="text-center">
                 <h1 className="text-2xl font-black text-white tracking-tight">
-                  ¿Qué eres en FWD?
+                  ¿Qué eres en U-Forward?
                 </h1>
                 <p className="mt-1.5 text-sm text-zinc-500">
                   Escoge el rol que mejor te describe.
@@ -344,7 +363,7 @@ export default function OnboardingPage() {
                 </h1>
                 <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
                   Tu perfil está configurado. Bienvenido a la comunidad{" "}
-                  <span className="text-purple-400 font-semibold">Udemy FWD Costa Rica</span>.
+                  <span className="text-purple-400 font-semibold">U-Forward</span>.
                 </p>
               </div>
 

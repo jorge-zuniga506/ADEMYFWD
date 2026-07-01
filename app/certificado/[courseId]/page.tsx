@@ -57,7 +57,7 @@ export default async function CertificadoPage({
           <GraduationCap className="mb-4 h-16 w-16 text-primary-600" />
 
           <p className="mb-2 text-sm font-medium uppercase tracking-widest text-zinc-400">
-            FWD Academy
+            U-Forward
           </p>
 
           <h1 className="mb-8 text-4xl font-bold tracking-tight">
@@ -85,7 +85,7 @@ export default async function CertificadoPage({
             </div>
             <Award className="h-8 w-8 text-primary-600" />
             <div className="flex-1 text-center">
-              <p className="font-medium">FWD Academy</p>
+              <p className="font-medium">U-Forward</p>
               <p className="text-xs text-zinc-400">Directiva</p>
             </div>
           </div>

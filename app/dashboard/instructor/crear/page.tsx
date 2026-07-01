@@ -88,7 +88,7 @@ export default async function CreateCoursePage() {
             name="esExclusivoFwd"
             className="h-4 w-4 rounded border-zinc-300 text-primary-600 focus:ring-primary-500"
           />
-          <span>Curso exclusivo FWD+</span>
+          <span>Curso exclusivo U-Forward+</span>
         </label>
 
         <Button type="submit" size="lg" className="self-start">

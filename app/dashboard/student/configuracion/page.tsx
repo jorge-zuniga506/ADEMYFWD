@@ -10,7 +10,7 @@ export default async function ConfiguracionPage() {
 
   const { data: perfil } = await supabase
     .from("User")
-    .select("nombre, email, bio, redesSociales")
+    .select("nombre, email, bio, redessociales")
     .eq("id", user!.id)
     .single();
 
@@ -94,11 +94,11 @@ export default async function ConfiguracionPage() {
             </form>
           </section>
 
-          {/* Centro de Verificación FWD */}
+          {/* Centro de Verificación U-Forward */}
           <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
             <div className="mb-4 flex items-center gap-3">
               <ShieldCheck className="h-5 w-5 text-zinc-400" />
-              <h2 className="font-semibold text-zinc-900 dark:text-zinc-50">Centro de Verificación FWD</h2>
+              <h2 className="font-semibold text-zinc-900 dark:text-zinc-50">Centro de Verificación U-Forward</h2>
             </div>
 
             {credential ? (
@@ -130,10 +130,10 @@ export default async function ConfiguracionPage() {
             ) : (
               <form action={requestFwdCredential} className="space-y-4">
                 <p className="text-xs text-zinc-500">
-                  Si eres graduado de FWD, puedes subir tu postulación para validar tu título y recibir beneficios exclusivos en tu perfil.
+                  Si eres graduado de U-Forward, puedes subir tu postulación para validar tu título y recibir beneficios exclusivos en tu perfil.
                 </p>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Enlace a tu título o portafolio FWD</label>
+                  <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Enlace a tu título o portafolio U-Forward</label>
                   <input
                     name="documentoUrl"
                     placeholder="https://drive.google.com/file/d/... o enlace similar"
@@ -142,7 +142,7 @@ export default async function ConfiguracionPage() {
                   />
                 </div>
                 <Button type="submit" size="sm">
-                  Soy graduado FWD: Validar mi título
+                  Soy graduado de U-Forward: Validar mi título
                 </Button>
               </form>
             )}
@@ -160,7 +160,7 @@ export default async function ConfiguracionPage() {
             <div className="flex-1 overflow-y-auto max-h-[450px] pr-1">
               {purchases && purchases.length > 0 ? (
                 <div className="space-y-3">
-                  {purchases.map((p: any) => (
+                  {purchases.map((p: { id: string; Course: { titulo: string } | null; fecha: string; cantidad: number }) => (
                     <div key={p.id} className="rounded-xl border border-zinc-100 p-3 dark:border-zinc-800 flex justify-between items-center">
                       <div className="min-w-0 pr-2">
                         <p className="font-bold text-xs truncate text-zinc-800 dark:text-zinc-200">{p.Course?.titulo}</p>

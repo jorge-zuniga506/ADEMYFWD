@@ -1,11 +1,11 @@
-# Contexto del Proyecto: UDEMYFWD (ADEMYFWD)
+# Contexto del Proyecto: U-Forward
 
 Este documento sirve como guía de contexto rápida para que cualquier Asistente de IA comprenda la arquitectura, el flujo de datos, la estructura de la base de datos y cómo instalar/ejecutar este proyecto.
 
 ---
 
 ## 1. Descripción General
-**UDEMYFWD** es una plataforma educativa clon de Udemy optimizada y personalizada para la academia FWD. Permite a estudiantes consumir cursos, a instructores crear contenido y administrar sus finanzas, y a administradores auditar cursos y validar identidades (anti-estafas) y credenciales.
+**U-Forward** es una plataforma educativa clon de Udemy optimizada y personalizada para la comunidad U-Forward. Permite a estudiantes consumir cursos, a instructores crear contenido y administrar sus finanzas, y a administradores auditar cursos y validar identidades (anti-estafas) y credenciales.
 
 ### Stack Tecnológico
 * **Framework:** Next.js 16 (App Router)
@@ -55,7 +55,7 @@ La base de datos se aloja en Supabase y las tablas, esquemas, políticas de segu
 
 ### Tablas Principales (PostgreSQL)
 * **`User`**: Almacena información del usuario. Contiene un enum `rol` (`'ESTUDIANTE'`, `'INSTRUCTOR'`, `'GRADUADO_FWD'`, `'ADMIN'`).
-* **`FwdCredential`**: Solicitudes de verificación de título para graduados de FWD.
+* **`FwdCredential`**: Solicitudes de verificación de título para graduados de U-Forward.
 * **`Category`**: Categorías de cursos (Frontend, Backend, DevOps, Data Science, Mobile, etc.).
 * **`Course`**: Carga de cursos, estado (`'BORRADOR'`, `'EN_REVISION'`, `'PUBLICADO'`), precio y exclusividad.
 * **`Section` & `Lesson`**: Módulos y lecciones de cada curso, ordenados con enlaces a videos (por defecto links de YouTube para el MVP).
@@ -119,7 +119,7 @@ Para inicializar la base de datos o aplicar cambios de esquema se utilizan scrip
 3. **Administrador (`ADMIN`)**:
    * Accede a `/dashboard/admin` para auditar cursos pendientes de revisión.
    * Procesa solicitudes de Payouts de los instructores.
-   * Valida títulos oficiales de graduados FWD (KYC) y gestiona usuarios en el sistema.
+   * Valida títulos oficiales de graduados U-Forward (KYC) y gestiona usuarios en el sistema.
    * Modera el ecosistema VIP (ofertas de trabajo y foros de código).
 
 ---

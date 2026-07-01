@@ -55,7 +55,7 @@ export default async function Home({
         <div className="pointer-events-none absolute top-20 right-1/4 -z-10 h-72 w-72 rounded-full bg-cyan-600/10 blur-[120px]" />
 
         <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-          {/* Left Side: Large Udemy FWD Costa Rica Logo Icon */}
+          {/* Left Side: Large U-Forward Logo Icon */}
           <div className="relative shrink-0 flex items-center justify-center animate-fade-in">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-[40px] opacity-20" />
             <LogoIcon className="h-44 w-44 drop-shadow-[0_0_30px_rgba(168,85,247,0.4)] relative z-10" />
@@ -67,20 +67,19 @@ export default async function Home({
           {/* Right Side: Title & Slogan */}
           <div className="text-center md:text-left space-y-4 max-w-md">
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white font-sans">
-              UDEMY F
+              U-
               <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-                W
+                FORWARD
               </span>
-              D
               <span className="block text-xl font-bold text-zinc-500 tracking-[0.25em] mt-1.5 font-mono">
-                COSTA RICA
+                ACADEMY
               </span>
             </h1>
             <p className="text-xs font-bold tracking-[0.25em] text-zinc-400 font-mono">
               <span className="text-purple-400">APRENDE</span> &bull; <span className="text-pink-400">CONSTRUYE</span> &bull; <span className="text-cyan-400">AVANZA</span>
             </p>
             <p className="text-xs text-zinc-500 leading-relaxed max-w-sm">
-              ¿Qué eres en FWD? ¿Qué eres en UDEMY FWD?
+              ¿Qué eres en U-Forward? Descubre tu potencial.
             </p>
           </div>
         </div>
@@ -185,7 +184,7 @@ export default async function Home({
 
       {/* Foot Footer */}
       <footer className="border-t border-zinc-900 bg-black/80 py-8 px-6 text-center text-xs text-zinc-600">
-        <p>&copy; {new Date().getFullYear()} Udemy FWD Costa Rica. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} U-Forward. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

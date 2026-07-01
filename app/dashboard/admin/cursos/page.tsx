@@ -15,7 +15,7 @@ export default async function AuditoriaCursosPage() {
   const { data: courses } = await supabase
     .from("Course")
     .select("id, titulo, descripcion, precio, estado, duracionHoras, videoUrl, instructorId, User!inner(nombre)")
-    .order("created_at", { ascending: false, nullsFirst: false });
+    .order("titulo", { ascending: true });
 
   return (
     <div>

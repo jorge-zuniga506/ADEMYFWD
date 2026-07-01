@@ -19,12 +19,12 @@ export default async function CertificadosPage() {
     .maybeSingle();
 
   // Dynamic Badge Unlocking Logic
-  const completedCategories = new Set((completed ?? []).map((c: any) => c.Course.categoryId));
+  const completedCategories = new Set((completed ?? []).map((c: { Course: { categoryId: string } }) => c.Course.categoryId));
 
   const badges = [
     {
       id: "explorer",
-      label: "Código FWD+",
+      label: "Código U-Forward+",
       desc: "Completaste tu primer curso técnico",
       icon: Flame,
       color: "text-amber-500 bg-amber-50 dark:bg-amber-950/20",
@@ -80,7 +80,7 @@ export default async function CertificadosPage() {
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="font-bold text-zinc-900 dark:text-zinc-50">Credencial FWD</h2>
+              <h2 className="font-bold text-zinc-900 dark:text-zinc-50">Credencial U-Forward</h2>
               <p className="text-xs text-zinc-500">
                 Estado: <span className="font-semibold text-primary-600 dark:text-primary-400 uppercase">{credentials.estado}</span> &middot;{" "}
                 {new Date(credentials.fechaSolicitud).toLocaleDateString()}

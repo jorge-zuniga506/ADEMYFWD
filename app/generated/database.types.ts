@@ -32,48 +32,45 @@ export type Database = {
       Course: {
         Row: {
           categoryId: string
-          created_at: string | null
           descripcion: string
           duracionHoras: number | null
           esExclusivoFwd: boolean
           estado: Database["public"]["Enums"]["CourseStatus"]
           id: string
           instructorId: string
+          liveMeetFecha: string | null
+          liveMeetLink: string | null
           precio: number
           titulo: string
           videoUrl: string | null
-          liveMeetLink: string | null
-          liveMeetFecha: string | null
         }
         Insert: {
           categoryId: string
-          created_at?: string | null
           descripcion: string
           duracionHoras?: number | null
           esExclusivoFwd?: boolean
           estado?: Database["public"]["Enums"]["CourseStatus"]
           id?: string
           instructorId: string
+          liveMeetFecha?: string | null
+          liveMeetLink?: string | null
           precio?: number
           titulo: string
           videoUrl?: string | null
-          liveMeetLink?: string | null
-          liveMeetFecha?: string | null
         }
         Update: {
           categoryId?: string
-          created_at?: string | null
           descripcion?: string
           duracionHoras?: number | null
           esExclusivoFwd?: boolean
           estado?: Database["public"]["Enums"]["CourseStatus"]
           id?: string
           instructorId?: string
+          liveMeetFecha?: string | null
+          liveMeetLink?: string | null
           precio?: number
           titulo?: string
           videoUrl?: string | null
-          liveMeetLink?: string | null
-          liveMeetFecha?: string | null
         }
         Relationships: [
           {
@@ -133,34 +130,34 @@ export type Database = {
       }
       Enrollment: {
         Row: {
-          courseId: string
+          archivado: boolean | null
           completado: boolean
+          courseId: string
           fechaCompletado: string | null
           id: string
+          lastLessonId: string | null
           progreso: number
           userId: string
-          archivado: boolean
-          lastLessonId: string | null
         }
         Insert: {
-          courseId: string
+          archivado?: boolean | null
           completado?: boolean
+          courseId: string
           fechaCompletado?: string | null
           id?: string
+          lastLessonId?: string | null
           progreso?: number
           userId: string
-          archivado?: boolean
-          lastLessonId?: string | null
         }
         Update: {
-          courseId?: string
+          archivado?: boolean | null
           completado?: boolean
+          courseId?: string
           fechaCompletado?: string | null
           id?: string
+          lastLessonId?: string | null
           progreso?: number
           userId?: string
-          archivado?: boolean
-          lastLessonId?: string | null
         }
         Relationships: [
           {
@@ -168,6 +165,13 @@ export type Database = {
             columns: ["courseId"]
             isOneToOne: false
             referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Enrollment_lastLessonId_fkey"
+            columns: ["lastLessonId"]
+            isOneToOne: false
+            referencedRelation: "Lesson"
             referencedColumns: ["id"]
           },
           {
@@ -209,83 +213,6 @@ export type Database = {
             referencedRelation: "User"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      PayoutRequest: {
-        Row: {
-          id: string
-          userId: string
-          cantidad: number
-          metodo: string
-          cuenta: string
-          estado: string
-          fechaSolicitud: string
-        }
-        Insert: {
-          id?: string
-          userId: string
-          cantidad: number
-          metodo: string
-          cuenta: string
-          estado?: string
-          fechaSolicitud?: string
-        }
-        Update: {
-          id?: string
-          userId?: string
-          cantidad?: number
-          metodo?: string
-          cuenta?: string
-          estado?: string
-          fechaSolicitud?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "PayoutRequest_userId_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "User"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      Transaction: {
-        Row: {
-          id: string
-          userId: string
-          courseId: string
-          cantidad: number
-          fecha: string
-        }
-        Insert: {
-          id?: string
-          userId: string
-          courseId: string
-          cantidad: number
-          fecha?: string
-        }
-        Update: {
-          id?: string
-          userId?: string
-          courseId?: string
-          cantidad?: number
-          fecha?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "Transaction_userId_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "User"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Transaction_courseId_fkey"
-            columns: ["courseId"]
-            isOneToOne: false
-            referencedRelation: "Course"
-            referencedColumns: ["id"]
-          }
         ]
       }
       FwdCredential: {
@@ -364,36 +291,80 @@ export type Database = {
           },
         ]
       }
+      InstructorVerification: {
+        Row: {
+          analisisIA: Json | null
+          certificadoUrl: string
+          comentario: string | null
+          createdAt: string | null
+          estado: Database["public"]["Enums"]["VerificacionEstado"] | null
+          id: string
+          puntuacion: number | null
+          revisadoEn: string | null
+          userId: string
+        }
+        Insert: {
+          analisisIA?: Json | null
+          certificadoUrl: string
+          comentario?: string | null
+          createdAt?: string | null
+          estado?: Database["public"]["Enums"]["VerificacionEstado"] | null
+          id?: string
+          puntuacion?: number | null
+          revisadoEn?: string | null
+          userId: string
+        }
+        Update: {
+          analisisIA?: Json | null
+          certificadoUrl?: string
+          comentario?: string | null
+          createdAt?: string | null
+          estado?: Database["public"]["Enums"]["VerificacionEstado"] | null
+          id?: string
+          puntuacion?: number | null
+          revisadoEn?: string | null
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "InstructorVerification_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Lesson: {
         Row: {
           esGratis: boolean
           id: string
           orden: number
+          recursoNombre: string | null
+          recursoUrl: string | null
           sectionId: string
           titulo: string
           videoUrl: string
-          recursoUrl: string | null
-          recursoNombre: string | null
         }
         Insert: {
           esGratis?: boolean
           id?: string
           orden: number
+          recursoNombre?: string | null
+          recursoUrl?: string | null
           sectionId: string
           titulo: string
           videoUrl: string
-          recursoUrl?: string | null
-          recursoNombre?: string | null
         }
         Update: {
           esGratis?: boolean
           id?: string
           orden?: number
+          recursoNombre?: string | null
+          recursoUrl?: string | null
           sectionId?: string
           titulo?: string
           videoUrl?: string
-          recursoUrl?: string | null
-          recursoNombre?: string | null
         }
         Relationships: [
           {
@@ -401,6 +372,167 @@ export type Database = {
             columns: ["sectionId"]
             isOneToOne: false
             referencedRelation: "Section"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Membership: {
+        Row: {
+          activa: boolean | null
+          beneficios: Json | null
+          createdAt: string | null
+          descripcion: string | null
+          descuentoPorcentaje: number | null
+          id: string
+          nombre: string
+          precio: number
+          tipo: Database["public"]["Enums"]["MembershipTipo"]
+        }
+        Insert: {
+          activa?: boolean | null
+          beneficios?: Json | null
+          createdAt?: string | null
+          descripcion?: string | null
+          descuentoPorcentaje?: number | null
+          id?: string
+          nombre: string
+          precio: number
+          tipo: Database["public"]["Enums"]["MembershipTipo"]
+        }
+        Update: {
+          activa?: boolean | null
+          beneficios?: Json | null
+          createdAt?: string | null
+          descripcion?: string | null
+          descuentoPorcentaje?: number | null
+          id?: string
+          nombre?: string
+          precio?: number
+          tipo?: Database["public"]["Enums"]["MembershipTipo"]
+        }
+        Relationships: []
+      }
+      PayoutRequest: {
+        Row: {
+          cantidad: number
+          cuenta: string
+          estado: string
+          fechaSolicitud: string
+          id: string
+          metodo: string
+          userId: string
+        }
+        Insert: {
+          cantidad: number
+          cuenta: string
+          estado?: string
+          fechaSolicitud?: string
+          id?: string
+          metodo: string
+          userId: string
+        }
+        Update: {
+          cantidad?: number
+          cuenta?: string
+          estado?: string
+          fechaSolicitud?: string
+          id?: string
+          metodo?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PayoutRequest_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Question: {
+        Row: {
+          contenido: string
+          courseid: string
+          fechacreacion: string
+          id: string
+          resuelta: boolean
+          titulo: string
+          userid: string
+          videoSegundo: number | null
+        }
+        Insert: {
+          contenido: string
+          courseid: string
+          fechacreacion?: string
+          id?: string
+          resuelta?: boolean
+          titulo: string
+          userid: string
+          videoSegundo?: number | null
+        }
+        Update: {
+          contenido?: string
+          courseid?: string
+          fechacreacion?: string
+          id?: string
+          resuelta?: boolean
+          titulo?: string
+          userid?: string
+          videoSegundo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Question_courseid_fkey"
+            columns: ["courseid"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Question_userid_fkey"
+            columns: ["userid"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Respuesta: {
+        Row: {
+          contenido: string
+          fechacreacion: string
+          id: string
+          questionid: string
+          userid: string
+        }
+        Insert: {
+          contenido: string
+          fechacreacion?: string
+          id?: string
+          questionid: string
+          userid: string
+        }
+        Update: {
+          contenido?: string
+          fechacreacion?: string
+          id?: string
+          questionid?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Respuesta_questionid_fkey"
+            columns: ["questionid"]
+            isOneToOne: false
+            referencedRelation: "Question"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Respuesta_userid_fkey"
+            columns: ["userid"]
+            isOneToOne: false
+            referencedRelation: "User"
             referencedColumns: ["id"]
           },
         ]
@@ -434,86 +566,38 @@ export type Database = {
           },
         ]
       }
-      Question: {
+      Transaction: {
         Row: {
+          cantidad: number
+          courseId: string
+          fecha: string
           id: string
           userId: string
-          courseId: string
-          titulo: string
-          contenido: string
-          fechaCreacion: string
-          resuelta: boolean
-          videoSegundo: number | null
         }
         Insert: {
+          cantidad: number
+          courseId: string
+          fecha?: string
           id?: string
           userId: string
-          courseId: string
-          titulo: string
-          contenido: string
-          fechaCreacion?: string
-          resuelta?: boolean
-          videoSegundo?: number | null
         }
         Update: {
+          cantidad?: number
+          courseId?: string
+          fecha?: string
           id?: string
           userId?: string
-          courseId?: string
-          titulo?: string
-          contenido?: string
-          fechaCreacion?: string
-          resuelta?: boolean
-          videoSegundo?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "Question_userId_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "User"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Question_courseId_fkey"
+            foreignKeyName: "Transaction_courseId_fkey"
             columns: ["courseId"]
             isOneToOne: false
             referencedRelation: "Course"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      Respuesta: {
-        Row: {
-          id: string
-          questionId: string
-          userId: string
-          contenido: string
-          fechaCreacion: string
-        }
-        Insert: {
-          id?: string
-          questionId: string
-          userId: string
-          contenido: string
-          fechaCreacion?: string
-        }
-        Update: {
-          id?: string
-          questionId?: string
-          userId?: string
-          contenido?: string
-          fechaCreacion?: string
-        }
-        Relationships: [
           {
-            foreignKeyName: "Respuesta_questionId_fkey"
-            columns: ["questionId"]
-            isOneToOne: false
-            referencedRelation: "Question"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "Respuesta_userId_fkey"
+            foreignKeyName: "Transaction_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "User"
@@ -523,65 +607,129 @@ export type Database = {
       }
       User: {
         Row: {
+          avatarUrl: string | null
           bio: string | null
+          comoNosConocio: string | null
           email: string
           fechaRegistro: string
-          fotoUrl: string | null
+          fotourl: string | null
           id: string
+          isVerified: boolean | null
           nombre: string
-          passwordHash: string
-          redesSociales: Record<string, string> | null
-          rol: Database["public"]["Enums"]["Role"]
           onboardingDone: boolean
-          username: string | null
+          passwordHash: string
           propositoUso: string | null
-          comoNosConocio: string | null
-          avatarUrl: string | null
+          redessociales: Json | null
+          rol: Database["public"]["Enums"]["Role"]
+          username: string | null
         }
         Insert: {
+          avatarUrl?: string | null
           bio?: string | null
+          comoNosConocio?: string | null
           email: string
           fechaRegistro?: string
-          fotoUrl?: string | null
+          fotourl?: string | null
           id?: string
+          isVerified?: boolean | null
           nombre: string
-          passwordHash: string
-          redesSociales?: Record<string, string> | null
-          rol?: Database["public"]["Enums"]["Role"]
           onboardingDone?: boolean
-          username?: string | null
+          passwordHash: string
           propositoUso?: string | null
-          comoNosConocio?: string | null
-          avatarUrl?: string | null
+          redessociales?: Json | null
+          rol?: Database["public"]["Enums"]["Role"]
+          username?: string | null
         }
         Update: {
+          avatarUrl?: string | null
           bio?: string | null
+          comoNosConocio?: string | null
           email?: string
           fechaRegistro?: string
-          fotoUrl?: string | null
+          fotourl?: string | null
           id?: string
+          isVerified?: boolean | null
           nombre?: string
-          passwordHash?: string
-          redesSociales?: Record<string, string> | null
-          rol?: Database["public"]["Enums"]["Role"]
           onboardingDone?: boolean
-          username?: string | null
+          passwordHash?: string
           propositoUso?: string | null
-          comoNosConocio?: string | null
-          avatarUrl?: string | null
+          redessociales?: Json | null
+          rol?: Database["public"]["Enums"]["Role"]
+          username?: string | null
         }
         Relationships: []
+      }
+      UserMembership: {
+        Row: {
+          createdAt: string | null
+          estado: Database["public"]["Enums"]["MembershipEstado"] | null
+          fechaFin: string | null
+          fechaInicio: string | null
+          id: string
+          membershipId: string
+          montoPagado: number
+          stripeCustomerId: string | null
+          stripeSessionId: string | null
+          stripeSubscriptionId: string | null
+          userId: string
+        }
+        Insert: {
+          createdAt?: string | null
+          estado?: Database["public"]["Enums"]["MembershipEstado"] | null
+          fechaFin?: string | null
+          fechaInicio?: string | null
+          id?: string
+          membershipId: string
+          montoPagado: number
+          stripeCustomerId?: string | null
+          stripeSessionId?: string | null
+          stripeSubscriptionId?: string | null
+          userId: string
+        }
+        Update: {
+          createdAt?: string | null
+          estado?: Database["public"]["Enums"]["MembershipEstado"] | null
+          fechaFin?: string | null
+          fechaInicio?: string | null
+          id?: string
+          membershipId?: string
+          montoPagado?: number
+          stripeCustomerId?: string | null
+          stripeSessionId?: string | null
+          stripeSubscriptionId?: string | null
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "UserMembership_membershipId_fkey"
+            columns: ["membershipId"]
+            isOneToOne: false
+            referencedRelation: "Membership"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "UserMembership_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      es_admin: { Args: never; Returns: boolean }
+      es_instructor: { Args: never; Returns: boolean }
     }
     Enums: {
       CourseStatus: "BORRADOR" | "EN_REVISION" | "PUBLICADO"
+      MembershipEstado: "ACTIVA" | "VENCIDA" | "CANCELADA" | "PENDIENTE_PAGO"
+      MembershipTipo: "DESCUENTO" | "ESTANDAR" | "PRO_MAX"
       Role: "ESTUDIANTE" | "INSTRUCTOR" | "GRADUADO_FWD" | "ADMIN"
+      VerificacionEstado: "PENDIENTE" | "APROBADO" | "RECHAZADO"
       VerificationStatus: "PENDIENTE" | "APROBADA" | "RECHAZADA"
     }
     CompositeTypes: {
@@ -711,7 +859,10 @@ export const Constants = {
   public: {
     Enums: {
       CourseStatus: ["BORRADOR", "EN_REVISION", "PUBLICADO"],
+      MembershipEstado: ["ACTIVA", "VENCIDA", "CANCELADA", "PENDIENTE_PAGO"],
+      MembershipTipo: ["DESCUENTO", "ESTANDAR", "PRO_MAX"],
       Role: ["ESTUDIANTE", "INSTRUCTOR", "GRADUADO_FWD", "ADMIN"],
+      VerificacionEstado: ["PENDIENTE", "APROBADO", "RECHAZADO"],
       VerificationStatus: ["PENDIENTE", "APROBADA", "RECHAZADA"],
     },
   },

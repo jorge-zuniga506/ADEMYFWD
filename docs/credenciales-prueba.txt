@@ -1,17 +1,17 @@
-CREDENCIALES DE PRUEBA - FWD Academy
+CREDENCIALES DE PRUEBA - U-Forward
 ======================================
 
 Admin
-  Email:    admin@fwd.academy
+  Email:    admin@u-forward.academy
   Password: Admin123!
   Rol:      ADMIN
 
 Instructor
-  Email:    instructor@fwd.academy
+  Email:    instructor@u-forward.academy
   Password: Instr123!
   Rol:      INSTRUCTOR
 
 Estudiante
-  Email:    estudiante@fwd.academy
+  Email:    estudiante@u-forward.academy
   Password: Estu123!
   Rol:      ESTUDIANTE

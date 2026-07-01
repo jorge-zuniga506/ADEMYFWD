@@ -21,7 +21,7 @@ export default async function VerificacionPage() {
           Centro de Verificacion
         </h1>
         <p className="mt-1 text-zinc-600 dark:text-zinc-400">
-          Filtro anti-estafas &mdash; Revisa y aprueba credenciales FWD
+          Filtro anti-estafas &mdash; Revisa y aprueba credenciales U-Forward
         </p>
       </div>
 

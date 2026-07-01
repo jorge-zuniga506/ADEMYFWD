@@ -44,6 +44,7 @@ export default async function DashboardRootLayout({
   if (rol === "ESTUDIANTE" || rol === "GRADUADO_FWD") {
     navItems.push(
       { href: "/dashboard/student", label: "Mis Cursos", icon: BookOpen },
+      { href: "/dashboard/student/membresia", label: "Membresía VIP", icon: Crown },
       { href: "/dashboard/student/player", label: "Reproductor", icon: PlayCircle },
       { href: "/dashboard/student/qanda", label: "Q&A", icon: MessageSquare },
       { href: "/dashboard/student/certificados", label: "Certificados", icon: Award },
@@ -55,6 +56,7 @@ export default async function DashboardRootLayout({
     navItems.push(
       { href: "/dashboard/instructor", label: "Panel Instructor", icon: BarChart3 },
       { href: "/dashboard/instructor/aula", label: "Aula Virtual", icon: GraduationCap },
+      { href: "/dashboard/instructor/vip-fwd", label: "VIP + FWD", icon: Crown },
       { href: "/dashboard/instructor/wallet", label: "Wallet", icon: Wallet },
       { href: "/dashboard/instructor/perfil", label: "Perfil Instructor", icon: User },
     );
@@ -63,6 +65,8 @@ export default async function DashboardRootLayout({
   if (rol === "ADMIN") {
     navItems.push(
       { href: "/dashboard/admin/verificacion", label: "Verificacion", icon: ShieldCheck },
+      { href: "/dashboard/admin/instructores-vip", label: "Instructores VIP+FWD", icon: Crown },
+      { href: "/dashboard/admin/membresias", label: "Membresías", icon: DollarSign },
       { href: "/dashboard/admin/cursos", label: "Auditoria", icon: BookOpen },
       { href: "/dashboard/admin/financiero", label: "Financiero", icon: DollarSign },
       { href: "/dashboard/admin/usuarios", label: "Usuarios", icon: Users },

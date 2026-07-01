@@ -99,6 +99,31 @@ export async function rejectJobPost(postId: string) {
   revalidatePath("/dashboard/admin/vip");
 }
 
+export async function approveInstructorVerification(verificationId: string, userId: string) {
+  const { supabase } = await requireAdmin();
+
+  await supabase
+    .from("InstructorVerification")
+    .update({ estado: "APROBADO", revisadoEn: new Date().toISOString() })
+    .eq("id", verificationId);
+
+  await supabase.from("User").update({ isVerified: true }).eq("id", userId);
+
+  revalidatePath("/dashboard/admin/instructores-vip");
+  revalidatePath("/cursos");
+}
+
+export async function rejectInstructorVerification(verificationId: string, notas: string) {
+  const { supabase } = await requireAdmin();
+
+  await supabase
+    .from("InstructorVerification")
+    .update({ estado: "RECHAZADO", comentario: notas, revisadoEn: new Date().toISOString() })
+    .eq("id", verificationId);
+
+  revalidatePath("/dashboard/admin/instructores-vip");
+}
+
 export async function processPayout(payoutId: string, actionType: "TRANSFERIDO" | "RECHAZADO") {
   const { supabase } = await requireAdmin();
 

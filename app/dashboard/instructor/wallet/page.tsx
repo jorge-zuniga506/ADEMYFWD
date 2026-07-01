@@ -7,10 +7,23 @@ export default async function WalletPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: cursos } = await supabase
+  const { data: dbUser } = await supabase
+    .from("User")
+    .select("rol")
+    .eq("id", user!.id)
+    .single();
+
+  const isStaff = dbUser?.rol === "ADMIN" || dbUser?.rol === "INSTRUCTOR";
+
+  let query = supabase
     .from("Course")
-    .select("id, precio, titulo")
-    .eq("instructorId", user!.id);
+    .select("id, precio, titulo");
+
+  if (!isStaff) {
+    query = query.eq("instructorId", user!.id);
+  }
+
+  const { data: cursos } = await query;
 
   const courseIds = (cursos ?? []).map((c) => c.id);
 
@@ -238,10 +251,10 @@ export default async function WalletPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-50 dark:divide-zinc-800">
-                  {sales.map((s: any) => (
+                  {sales.map((s: { id: string; User: { nombre: string } | null; Course: { titulo: string } | null; fecha: string; cantidad: number }) => (
                     <tr key={s.id}>
                       <td className="py-2.5 font-medium text-zinc-800 dark:text-zinc-200">
-                        {s.User?.nombre ?? "Alumno FWD"}
+                        {s.User?.nombre ?? "Alumno U-Forward"}
                       </td>
                       <td className="py-2.5 text-zinc-500 max-w-[140px] truncate">
                         {s.Course?.titulo}

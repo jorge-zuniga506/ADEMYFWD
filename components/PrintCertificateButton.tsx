@@ -4,8 +4,7 @@ import { Printer, Share2 } from "lucide-react";
 
 export default function PrintCertificateButton({ courseTitle }: { courseTitle: string }) {
   const handleShare = () => {
-    const text = `¡Me acabo de graduar del curso "${courseTitle}" en FWD Academy! 🎓🚀`;
-    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://fwd.academy/certificados/" + courseTitle.toLowerCase().replace(/ /g, "-"))}`;
+    const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://u-forward.academy/certificados/" + courseTitle.toLowerCase().replace(/ /g, "-"))}`;
     window.open(shareUrl, "_blank");
   };
 

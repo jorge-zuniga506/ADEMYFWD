@@ -8,7 +8,7 @@ export default function ComunidadPage() {
         {/* Header */}
         <div className="space-y-4 text-center max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
-            Comunidad FWD
+            Comunidad U-Forward
           </h1>
           <p className="text-sm text-zinc-400">
             Conecta, comparte código y construye soluciones en equipo junto a cientos de graduados y mentores técnicos.
@@ -57,7 +57,7 @@ export default function ComunidadPage() {
         {/* Global stats */}
         <div className="rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-center space-y-2">
           <Globe className="mx-auto h-6 w-6 text-purple-400" />
-          <h4 className="font-bold text-sm text-white">Red de Trabajo de FWD Academy</h4>
+          <h4 className="font-bold text-sm text-white">Red de Trabajo de U-Forward</h4>
           <p className="text-xs text-zinc-500 max-w-md mx-auto">
             El 82% de nuestros alumnos egresados logran conectar con vacantes del ecosistema VIP en los primeros 3 meses de su graduación.
           </p>

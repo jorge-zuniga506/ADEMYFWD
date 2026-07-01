@@ -18,7 +18,7 @@ export default async function CursosPage({
 
   let query = supabase
     .from("Course")
-    .select("id, titulo, descripcion, precio, esExclusivoFwd")
+    .select("id, titulo, descripcion, precio, esExclusivoFwd, duracionHoras, categoryId, instructorId")
     .eq("estado", "PUBLICADO"); // Only show published courses
 
   if (params.q) {
@@ -29,7 +29,18 @@ export default async function CursosPage({
     if (cat) query = query.eq("categoryId", cat.id);
   }
 
-  const { data: courses } = await query;
+  const { data: coursesRaw } = await query;
+
+  // Courses from VIP+FWD verified instructors are surfaced first.
+  const instructorIds = [...new Set((coursesRaw ?? []).map((c) => c.instructorId))];
+  const { data: verifiedInstructors } = instructorIds.length > 0
+    ? await supabase.from("User").select("id, isVerified").in("id", instructorIds)
+    : { data: [] };
+  const verifiedSet = new Set((verifiedInstructors ?? []).filter((u) => u.isVerified).map((u) => u.id));
+
+  const courses = (coursesRaw ?? [])
+    .map((c) => ({ ...c, instructorVerificado: verifiedSet.has(c.instructorId) }))
+    .sort((a, b) => Number(b.instructorVerificado) - Number(a.instructorVerificado));
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans px-6 py-12 dark">
@@ -41,7 +52,7 @@ export default async function CursosPage({
             Catálogo de Cursos
           </h1>
           <p className="text-sm text-zinc-400">
-            Especializaciones profesionales diseñadas por mentores FWD. Adquiere habilidades demandadas hoy.
+            Especializaciones profesionales diseñadas por mentores de U-Forward. Adquiere habilidades demandadas hoy.
           </p>
         </div>
 

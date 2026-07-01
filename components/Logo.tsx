@@ -55,15 +55,14 @@ export function LogoText({ showSub = true }: { showSub?: boolean }) {
   return (
     <div className="flex flex-col justify-center leading-none">
       <span className="font-sans font-black tracking-tight text-white text-lg">
-        UDEMY F
+        U-
         <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          W
+          FORWARD
         </span>
-        D
       </span>
       {showSub && (
         <span className="text-[8px] uppercase tracking-[0.25em] font-bold text-zinc-500 mt-0.5">
-          COSTA RICA
+          ACADEMY
         </span>
       )}
     </div>

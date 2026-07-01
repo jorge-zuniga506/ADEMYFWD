@@ -1,4 +1,4 @@
-ARQUITECTURA DE DASHBOARDS - FWD Academy
+ARQUITECTURA DE DASHBOARDS - U-Forward
 =========================================
 
 INDICE
@@ -12,7 +12,7 @@ INDICE
 5 modulos principales:
 
 1.1 Centro de Verificacion (Filtro Anti-Estafas)
-  - Aprobacion FWD: Revisar certificado Full-Stack subido. Admin visualiza PDF,
+  - Aprobacion U-Forward: Revisar certificado Full-Stack subido. Admin visualiza PDF,
     hace clic en "Aprobar" (cambia rol a GRADUADO_FWD) o "Rechazar" (correo automatico).
   - Validacion de Identidad (KYC): Revisar identificacion oficial y portafolio de instructores.
 
@@ -92,7 +92,7 @@ INDICE
 
 3.5 Configuracion y Estado de Cuenta
   - Historial de Compras: lista de pagos, descarga factura.
-  - Centro de Verificacion FWD: boton "Soy graduado FWD: Validar mi titulo".
+  - Centro de Verificacion U-Forward: boton "Soy graduado U-Forward: Validar mi titulo".
 
 
 TECNOLOGIAS PLANIFICADAS

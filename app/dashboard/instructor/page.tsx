@@ -6,10 +6,23 @@ export default async function InstructorMetricsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: cursos } = await supabase
+  const { data: dbUser } = await supabase
+    .from("User")
+    .select("rol")
+    .eq("id", user!.id)
+    .single();
+
+  const isStaff = dbUser?.rol === "ADMIN" || dbUser?.rol === "INSTRUCTOR";
+
+  let query = supabase
     .from("Course")
-    .select("id, titulo, precio, estado, User!inner(nombre)")
-    .eq("instructorId", user!.id);
+    .select("id, titulo, precio, estado, User!inner(nombre)");
+
+  if (!isStaff) {
+    query = query.eq("instructorId", user!.id);
+  }
+
+  const { data: cursos } = await query;
 
   const courseIds = (cursos ?? []).map((c) => c.id);
   

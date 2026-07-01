@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Users, Video, Megaphone, MessageSquare, ExternalLink, Calendar, CheckCircle2, Clock } from "lucide-react";
-import { saveLiveMeet, sendAnnouncement } from "@/lib/actions/instructor";
+import { saveLiveMeet, sendAnnouncement, generateGoogleMeetLink } from "@/lib/actions/instructor";
 import { Button } from "./ui";
 
 interface Course {
@@ -50,6 +50,9 @@ export default function AulaVirtualTabs({
   const [announcementMsg, setAnnouncementMsg] = useState("");
   const [payoutMsg, setPayoutMsg] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState(cursos[0]?.id ?? "");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const meetLinkRef = useRef<HTMLInputElement>(null);
+  const meetDateRef = useRef<HTMLInputElement>(null);
 
   const selectedCourse = cursos.find((c) => c.id === selectedCourseId);
 
@@ -206,7 +209,7 @@ export default function AulaVirtualTabs({
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 space-y-4">
               <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Programar Clase en Vivo</h3>
-              <form action={saveLiveMeet} className="space-y-4" onSubmit={async (e) => {
+              <form action={saveLiveMeet} key={selectedCourseId} className="space-y-4" onSubmit={async (e) => {
                 e.preventDefault();
                 const form = e.currentTarget;
                 const formData = new FormData(form);
@@ -237,20 +240,52 @@ export default function AulaVirtualTabs({
 
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Enlace de la llamada (Zoom, Meet, Teams)</label>
-                  <input
-                    key={`${selectedCourseId}-link`}
-                    name="liveMeetLink"
-                    placeholder="https://meet.google.com/abc-defg-hij"
-                    defaultValue={selectedCourse?.liveMeetLink ?? ""}
-                    required
-                    className="w-full rounded-xl border border-zinc-300 bg-transparent px-4 py-2 text-sm focus:border-primary-500 focus:outline-none dark:border-zinc-700"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      ref={meetLinkRef}
+                      name="liveMeetLink"
+                      placeholder="https://meet.google.com/abc-defg-hij"
+                      defaultValue={selectedCourse?.liveMeetLink ?? ""}
+                      required
+                      className="flex-1 rounded-xl border border-zinc-300 bg-transparent px-4 py-2 text-sm focus:border-primary-500 focus:outline-none dark:border-zinc-700"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const dateVal = meetDateRef.current?.value;
+                        if (!dateVal) {
+                          alert("Por favor, selecciona primero la fecha y hora de la mentoría.");
+                          return;
+                        }
+                        try {
+                          setIsGenerating(true);
+                          const res = await generateGoogleMeetLink(selectedCourseId, selectedCourse?.titulo ?? "", dateVal);
+                          if (res.success && meetLinkRef.current) {
+                            meetLinkRef.current.value = res.link;
+                            if (res.isSimulated) {
+                              alert(`Enlace generado con éxito!\n\nNota: ${res.message}`);
+                            } else {
+                              alert("¡Llamada de Google Meet generada de forma real y exitosa!");
+                            }
+                          }
+                        } catch (err: any) {
+                          alert("Error al generar enlace: " + err.message);
+                        } finally {
+                          setIsGenerating(false);
+                        }
+                      }}
+                      disabled={isGenerating}
+                      className="rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-750 px-4 text-xs font-semibold text-zinc-800 dark:text-zinc-200 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    >
+                      {isGenerating ? "Generando..." : "Generar con Meet"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Fecha y Hora de la mentoría</label>
                   <input
-                    key={`${selectedCourseId}-date`}
+                    ref={meetDateRef}
                     name="liveMeetFecha"
                     type="datetime-local"
                     defaultValue={formatDateTimeLocal(selectedCourse?.liveMeetFecha ?? null)}

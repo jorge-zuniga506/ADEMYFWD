@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FWD Academy",
-  description: "Cursos premium en video con progreso, certificados y comunidad. Frontend, backend y lógica web para la comunidad Udemy FWD Costa Rica.",
+  title: "U-Forward",
+  description: "Cursos premium en video con progreso, certificados y comunidad. Frontend, backend y lógica web para la comunidad U-Forward.",
 };
 
 export default function RootLayout({

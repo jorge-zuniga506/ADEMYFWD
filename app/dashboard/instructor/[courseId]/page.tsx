@@ -9,6 +9,7 @@ import {
   deleteLesson 
 } from "@/lib/actions/courses";
 import { Trash2 } from "lucide-react";
+import DeleteForm from "./DeleteForm";
 
 export default async function EditCoursePage({
   params,
@@ -119,7 +120,7 @@ export default async function EditCoursePage({
 
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="esExclusivoFwd" defaultChecked={course.esExclusivoFwd} />
-            <span>Curso exclusivo FWD+</span>
+            <span>Curso exclusivo U-Forward+</span>
           </label>
 
           <button
@@ -130,13 +131,9 @@ export default async function EditCoursePage({
           </button>
         </form>
 
-        <form 
-          action={deleteCourse.bind(null, courseId)} 
-          onSubmit={(e) => {
-            if (!confirm("¿Estás seguro de que quieres eliminar este curso? Esta acción no se puede deshacer.")) {
-              e.preventDefault();
-            }
-          }}
+        <DeleteForm
+          action={deleteCourse.bind(null, courseId)}
+          confirmMessage="¿Estás seguro de que quieres eliminar este curso? Esta acción no se puede deshacer."
           className="mt-6 border-t border-red-100 bg-red-50/30 p-4 rounded-xl dark:border-red-950/30 dark:bg-red-950/10 flex flex-col gap-2"
         >
           <h3 className="text-sm font-semibold text-red-800 dark:text-red-400">Zona de Peligro</h3>
@@ -149,7 +146,7 @@ export default async function EditCoursePage({
           >
             Eliminar curso permanentemente
           </button>
-        </form>
+        </DeleteForm>
       </section>
 
       <section className="mb-10">
@@ -213,18 +210,14 @@ async function SectionEditor({
         <span className="text-sm font-medium">
           {section.orden}. {section.titulo}
         </span>
-        <form 
-          action={deleteSection.bind(null, section.id, courseId)} 
-          onSubmit={(e) => {
-            if (!confirm("¿Estás seguro de que quieres eliminar esta sección?")) {
-              e.preventDefault();
-            }
-          }}
+        <DeleteForm
+          action={deleteSection.bind(null, section.id, courseId)}
+          confirmMessage="¿Estás seguro de que quieres eliminar esta sección?"
         >
           <button type="submit" className="text-zinc-400 hover:text-red-500 transition p-1">
             <Trash2 className="h-4 w-4" />
           </button>
-        </form>
+        </DeleteForm>
       </div>
 
       {lessons && lessons.length > 0 ? (
@@ -247,18 +240,14 @@ async function SectionEditor({
                   </span>
                 )}
               </div>
-              <form 
-                action={deleteLesson.bind(null, lesson.id, section.id, courseId)} 
-                onSubmit={(e) => {
-                  if (!confirm("¿Estás seguro de que quieres eliminar esta lección?")) {
-                    e.preventDefault();
-                  }
-                }}
+              <DeleteForm
+                action={deleteLesson.bind(null, lesson.id, section.id, courseId)}
+                confirmMessage="¿Estás seguro de que quieres eliminar esta lección?"
               >
                 <button type="submit" className="text-zinc-400 hover:text-red-500 transition p-1">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
-              </form>
+              </DeleteForm>
             </div>
           ))}
         </div>

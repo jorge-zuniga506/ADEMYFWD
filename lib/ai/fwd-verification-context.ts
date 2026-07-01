@@ -1,0 +1,37 @@
+// Contenido íntegro de instrucionesia.txt — la guía oficial de verificación
+// de títulos del programa Forward Costa Rica. Se embebe como constante (en
+// vez de leerse en runtime desde el filesystem) para que quede garantizado
+// en el bundle serverless de Vercel. Si el documento cambia, actualiza este
+// archivo junto con instrucionesia.txt.
+export const FWD_VERIFICATION_CONTEXT = `Guía de Requisitos para la Verificación de Títulos del Programa Forward Costa Rica
+
+Esta guía está diseñada para que el equipo de revisión de mentores confirme la autenticidad y los detalles correctos de un certificado emitido por la Fundación CRC Endurance a través del programa Forward Costa Rica.
+
+Puntos de Verificación de Registro (Críticos para la Autenticidad)
+Estos son los mecanismos de seguridad más fuertes y no se pueden falsificar visualmente.
+
+Validación en Base de Datos Oficial: El revisor debe tener acceso o contactar a la Fundación CRC Endurance (o al administrador del programa FWD) para confirmar que el titular y los detalles de su certificado coinciden con la base de datos oficial.
+Verificación de Folio y Tomo:
+Los números específicos de registro (Tomo, Folio, Asiento) son únicos para cada certificado.
+El revisor debe verificar que los números presentados coincidan con el registro de la fundación.
+Ejemplo en el certificado: Tomo: 01, Folio: 35, Asiento: 31.
+
+Datos Personales y del Titular
+Coincidencia de Nombre Completo: El nombre completo en el certificado debe coincidir exactamente con el nombre en la identificación oficial presentada por el mentor (Cédula de Identidad, Pasaporte, etc.). No se permiten discrepancias en el segundo apellido, por ejemplo.
+Ejemplo en el certificado: Carlos Andrés Ramírez Rojas.
+Verificación del Número de Cédula: El número de cédula (identificador único) debe ser verificado con la identificación oficial del titular. Un error en un dígito invalida la verificación visual.
+Ejemplo en el certificado: Cédula: 115420893.
+
+Detalles del Programa y Título
+Nombre Exacto del Programa: El título debe especificar "DESARROLLADORES WEB FULL-STACK". No se aceptan variantes genéricas como "Desarrollador Web".
+Duración del Programa: Debe indicar un número específico de horas cronológicas que sea coherente con la complejidad del curso.
+Ejemplo en el certificado: 960 horas cronológicas. Un curso de "Full-Stack" de 20 horas sería sospechoso.
+
+Datos del Emisor y Validación Visual
+Identificación Clara de la Fundación Emisora: El certificado debe mencionar explícitamente a la "Fundación CRC Endurance" y su carácter de Organización No Gubernamental (ONG).
+Ubicación y Coherencia Geográfica: El lugar de emisión debe ser coherente con la operación del programa.
+Ejemplo en el certificado: "Se emite en la ciudad de Desamparados, San José".
+Fecha de Emisión Coherente: La fecha de emisión debe ser posterior a la fecha de finalización del programa y debe ser lógica en el tiempo.
+Ejemplo en el certificado: 26 de junio, 2026 (Nota: En un escenario real, una fecha futura como esta sería una bandera roja importante de que es un borrador o un error de plantilla).
+Firma Autorizada: El certificado debe llevar la firma de un oficial autorizado de la fundación. El revisor debe conocer las firmas autorizadas (en este caso, Roberto Solano, Director).
+Logotipos y Estilo de Branding: Los logotipos oficiales de FWD Costa Rica y de la Fundación CRC Endurance deben estar presentes y ser nítidos. El estilo visual (en este caso, un degradado teal-to-purple muy específico con un corte troquelado distintivo en el papel gris) debe ser consistente con los documentos oficiales de FWD.`;

@@ -11,7 +11,7 @@ export default function SobreNosotrosPage() {
             Sobre Nosotros
           </h1>
           <p className="text-sm text-zinc-400">
-            Conoce la visión técnica y el equipo detrás de FWD Academy. Construyendo el futuro del aprendizaje de código.
+            Conoce la visión técnica y el equipo detrás de U-Forward. Construyendo el futuro del aprendizaje de código.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export default function SobreNosotrosPage() {
             <h4 className="font-bold text-base text-white">Nuestra Historia & Misión</h4>
           </div>
           <p className="text-xs text-zinc-400 leading-relaxed">
-            FWD Academy nació como un esfuerzo conjunto dentro de la comunidad FWD para consolidar una academia técnica en línea de nivel avanzado. A diferencia de plataformas genéricas, enfocamos cada lección en resolver problemas del mundo real y en la creación de portafolios robustos listos para el mercado laboral internacional.
+            U-Forward nació como un esfuerzo conjunto dentro de la comunidad U-Forward para consolidar una academia técnica en línea de nivel avanzado. A diferencia de plataformas genéricas, enfocamos cada lección en resolver problemas del mundo real y en la creación de portafolios robustos listos para el mercado laboral internacional.
           </p>
           <p className="text-xs text-zinc-400 leading-relaxed">
             Nuestros mentores son desarrolladores e ingenieros que trabajan activamente en la industria de la tecnología y aplican diariamente los estándares que enseñan.

@@ -26,29 +26,38 @@ async function createOrGetUser(email: string, password: string, metadata: Record
 async function seed() {
   console.log("Seed: Creando usuarios...");
 
-  const admin = await createOrGetUser("admin@fwd.academy", "Admin123!", { nombre: "Admin FWD" });
+  const admin = await createOrGetUser("admin@u-forward.academy", "Admin123!", { nombre: "Admin U-Forward" });
   await supabase.from("User").upsert({
     id: admin.id,
-    nombre: "Admin FWD",
-    email: "admin@fwd.academy",
+    nombre: "Admin U-Forward",
+    email: "admin@u-forward.academy",
     passwordHash: "",
     rol: "ADMIN",
   });
 
-  const instructor = await createOrGetUser("instructor@fwd.academy", "Instr123!", { nombre: "Carlos Instructor" });
+  const instructor = await createOrGetUser("instructor@u-forward.academy", "Instr123!", { nombre: "Carlos Instructor" });
   await supabase.from("User").upsert({
     id: instructor.id,
     nombre: "Carlos Instructor",
-    email: "instructor@fwd.academy",
+    email: "instructor@u-forward.academy",
     passwordHash: "",
     rol: "INSTRUCTOR",
   });
 
-  const student = await createOrGetUser("estudiante@fwd.academy", "Estu123!", { nombre: "Maria Estudiante" });
+  const santiago = await createOrGetUser("santiago@u-forward.academy", "Santi123!", { nombre: "Santiago Hernández" });
+  await supabase.from("User").upsert({
+    id: santiago.id,
+    nombre: "Santiago Hernández",
+    email: "santiago@u-forward.academy",
+    passwordHash: "",
+    rol: "INSTRUCTOR",
+  });
+
+  const student = await createOrGetUser("estudiante@u-forward.academy", "Estu123!", { nombre: "Maria Estudiante" });
   await supabase.from("User").upsert({
     id: student.id,
     nombre: "Maria Estudiante",
-    email: "estudiante@fwd.academy",
+    email: "estudiante@u-forward.academy",
     passwordHash: "",
     rol: "ESTUDIANTE",
   });

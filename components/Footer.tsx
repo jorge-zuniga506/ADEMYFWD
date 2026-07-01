@@ -16,7 +16,7 @@ const Footer = () => {
               <Logo className="h-8 w-8" />
             </div>
             <p className="text-sm leading-relaxed max-w-sm text-neutral-400">
-              Cursos premium en video con progreso, certificados y comunidad. Frontend, backend y lógica web para la comunidad Udemy FWD Costa Rica.
+              Cursos premium en video con progreso, certificados y comunidad. Frontend, backend y lógica web para la comunidad U-Forward.
             </p>
           </div>
 
@@ -34,7 +34,7 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4 text-sm">Comunidad</h3>
             <ul className="space-y-3 text-sm text-neutral-400">
-              <li><span className="hover:text-white transition-colors cursor-pointer">FWD+</span></li>
+              <li><span className="hover:text-white transition-colors cursor-pointer">U-Forward+</span></li>
               <li><span className="hover:text-white transition-colors cursor-pointer">Blog</span></li>
             </ul>
           </div>
@@ -51,7 +51,7 @@ const Footer = () => {
           
           {/* Texto de Derechos Reservados centrado */}
           <div className="w-full text-center text-sm text-neutral-500">
-            © 2026 FWD Academy. Todos los derechos reservados.
+            © 2026 U-Forward. Todos los derechos reservados.
           </div>
           
         </div>

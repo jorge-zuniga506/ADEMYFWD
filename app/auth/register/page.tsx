@@ -93,7 +93,7 @@ export default function RegisterPage() {
               Crea tu cuenta
             </h1>
             <p className="mt-1.5 text-sm text-zinc-500">
-              Únete a la comunidad Udemy FWD Costa Rica
+              Únete a la comunidad U-Forward
             </p>
           </div>
 
