@@ -146,6 +146,7 @@ export async function addQuizLessonAction(
       titulo: tituloExamen,
       orden: maxOrden + 1,
       esGratis: false,
+      videoUrl: "", // Cumplir con la restricción NOT NULL de la base de datos
       recursoNombre: "Examen_Evaluacion_IA.txt",
       recursoUrl: recursoUrl
     });

@@ -288,8 +288,7 @@ export default function InmersivePlayer({
                   </div>
                   <a
                     href={currentLesson.recursoUrl}
-                    target="_blank"
-                    rel="noreferrer"
+                    download={currentLesson.recursoNombre || "recurso"}
                     className="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 hover:bg-primary-500 px-3 py-1.5 text-xs font-bold text-white transition-colors"
                   >
                     <Download className="h-3.5 w-3.5" />
