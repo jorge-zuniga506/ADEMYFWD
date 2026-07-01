@@ -65,7 +65,11 @@ export default function AiSupportChat() {
           onClick={() => setIsOpen(true)}
           className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 via-purple-600 to-pink-500 text-white shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 relative group cursor-pointer border border-white/10"
         >
-          <Bot className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
+          <img
+            src="/images/ademy-logo.png"
+            alt="Ademy Logo"
+            className="h-9 w-9 rounded-full object-cover group-hover:rotate-6 transition-transform duration-300 border border-white/20 shadow-md"
+          />
           <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-cyan-500"></span>
@@ -83,8 +87,12 @@ export default function AiSupportChat() {
           {/* Cabecera del Chat */}
           <div className="bg-gradient-to-r from-cyan-950/40 via-purple-950/40 to-zinc-950 p-4 border-b border-zinc-900 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-cyan-500 to-purple-600 text-white shadow-inner">
-                <Bot className="h-4.5 w-4.5" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 shadow-inner overflow-hidden">
+                <img
+                  src="/images/ademy-logo.png"
+                  alt="Ademy Logo"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-white flex items-center gap-1.5">

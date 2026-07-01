@@ -180,21 +180,60 @@ export async function askAiSupportAction(
   // Validar límites de IA
   await checkAiLimit(user.id);
 
+  // Obtener rol del usuario para el control de acceso
+  const { data: perfil } = await supabase
+    .from("User")
+    .select("rol")
+    .eq("id", user.id)
+    .single();
+
+  const rol = perfil?.rol || "ESTUDIANTE";
+
+  // Definición del mapa de enlaces de la plataforma según el rol
+  const enlacesEstudiante = `
+- **Mis Cursos / Aula Virtual**: [/dashboard/student](file:///dashboard/student)
+- **Membresía VIP (U-Forward+)**: [/dashboard/student/membresia](file:///dashboard/student/membresia)
+- **Certificados obtenidos**: [/dashboard/student/certificados](file:///dashboard/student/certificados)
+- **Foro de Consultas Q&A**: [/dashboard/student/qanda](file:///dashboard/student/qanda)
+- **Configuración de Cuenta**: [/dashboard/student/configuracion](file:///dashboard/student/configuracion)
+- **Catálogo General de Cursos**: [/cursos](file:///cursos)
+- **Recursos Gratuitos**: [/recursos](file:///recursos)`;
+
+  const enlacesInstructor = `
+- **Panel de Instructor (Gestión de Cursos)**: [/dashboard/instructor](file:///dashboard/instructor)
+- **Aula Virtual del Instructor**: [/dashboard/instructor/aula](file:///dashboard/instructor/aula)
+- **Verificación VIP FWD (Títulos)**: [/dashboard/instructor/vip-fwd](file:///dashboard/instructor/vip-fwd)
+- **Wallet (Ingresos y Retiros)**: [/dashboard/instructor/wallet](file:///dashboard/instructor/wallet)
+- **Configuración de Perfil**: [/dashboard/instructor/perfil](file:///dashboard/instructor/perfil)`;
+
+  const enlacesAdmin = `
+- **Auditoría de Cursos**: [/dashboard/admin/cursos](file:///dashboard/admin/cursos)
+- **Gestión de Membresías**: [/dashboard/admin/membresias](file:///dashboard/admin/membresias)
+- **Panel Financiero y Consumo de IA**: [/dashboard/admin/financiero](file:///dashboard/admin/financiero)
+- **Verificación de Instructores**: [/dashboard/admin/verificacion](file:///dashboard/admin/verificacion)
+- **Gestión de Usuarios**: [/dashboard/admin/usuarios](file:///dashboard/admin/usuarios)`;
+
+  let enlacesPermitidos = enlacesEstudiante;
+  if (rol === "INSTRUCTOR") {
+    enlacesPermitidos = `${enlacesEstudiante}\n${enlacesInstructor}`;
+  } else if (rol === "ADMIN") {
+    enlacesPermitidos = `${enlacesEstudiante}\n${enlacesInstructor}\n${enlacesAdmin}`;
+  }
+
   const systemPrompt = {
     role: "system" as const,
-    content: `Eres Ademy, el asistente inteligente oficial de soporte técnico de U-Forward Academy (ADEMYFWD).
-Tu tarea es resolver dudas sobre:
-1. Inscripciones: Los alumnos se inscriben a cursos gratis con un clic, o de pago a través de Stripe.
-2. Membresías VIP: La membresía Pro Max cuesta $9.99/mes y da acceso ilimitado a todo el catálogo VIP (U-Forward+).
-3. Certificados: Al completar el 100% de las lecciones, los alumnos obtienen un diploma oficial imprimible y verificable en su panel.
-4. Foro Q&A: Los alumnos pueden publicar dudas en cada lección y los instructores les responden por ahí.
-5. Instructores: Los instructores pueden crear cursos y enviarlos a Auditoría de IA para ser publicados automáticamente.
+    content: `Eres Ademy, la asistente de soporte inteligente oficial de U-Forward Academy (ADEMYFWD).
+El usuario que está hablando contigo tiene el rol de: **${rol}**.
 
-Pautas de comportamiento:
-- Sé sumamente servicial, amable y usa un tono tecnológico y profesional.
-- En español.
-- Si te preguntan algo ajeno a la plataforma o soporte técnico, recuérdales amablemente que estás diseñado para ayudarles con la plataforma U-Forward.
-- Mantén las respuestas claras y concisas (máximo 120 palabras).`
+Enlaces oficiales que debes proporcionarle al usuario en formato Markdown si los solicita o si encajan con su duda:
+${enlacesPermitidos}
+
+NORMAS DE SEGURIDAD ESTRICTAS POR PERFIL DE ACCESO:
+1. El rol actual del usuario es **${rol}**. Si el usuario tiene rol "ESTUDIANTE", bajo ninguna circunstancia le proporciones enlaces o instrucciones de "INSTRUCTOR" o "ADMIN". Si intenta pedirlos o pregunta por ellos, dile educadamente que no tienes autorización para proporcionarle accesos o información fuera de su perfil actual.
+2. Si un usuario con rol "INSTRUCTOR" te pide enlaces de "ADMIN" (como auditoría o financiero), niégalo amablemente.
+3. Resuelve dudas sobre inscripciones, Stripe, certificados al 100% y foro de dudas.
+4. Sé sumamente servicial, amable y usa un tono tecnológico y profesional.
+5. Mantén las respuestas claras y concisas (máximo 120 palabras).`
   };
 
   const messages = [systemPrompt, ...chatHistory];
