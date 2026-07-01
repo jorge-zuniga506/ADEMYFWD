@@ -49,7 +49,7 @@ async function run() {
             
             // Subir variable a Vercel para cada entorno por separado
             for (const env of ['production', 'preview', 'development']) {
-                execSync(`npx vercel env add ${key} ${env} --value "${value.replace(/"/g, '\\"')}" --yes`, { stdio: 'ignore' });
+                execSync(`npx vercel env add ${key} ${env} --value "${value.replace(/"/g, '\\"')}" --yes --force`, { stdio: 'ignore' });
             }
             console.log(`✅ ${key} subida con éxito.`);
         } catch (err) {
