@@ -10,6 +10,9 @@ import {
 } from "@/lib/actions/courses";
 import { Trash2 } from "lucide-react";
 import DeleteForm from "./DeleteForm";
+import AiDescriptionButton from "@/components/ai/AiDescriptionButton";
+import AiSectionButton from "@/components/ai/AiSectionButton";
+import AiQuizGenerator from "@/components/ai/AiQuizGenerator";
 
 export default async function EditCoursePage({
   params,
@@ -29,6 +32,7 @@ export default async function EditCoursePage({
   if (!course || course.instructorId !== user.id) notFound();
 
   const { data: categories } = await supabase.from("Category").select("id, nombre");
+  const categoryName = categories?.find(c => c.id === course.categoryId)?.nombre ?? "General";
   const { data: sections } = await supabase
     .from("Section")
     .select("id, titulo, orden")
@@ -37,7 +41,14 @@ export default async function EditCoursePage({
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-10">
-      <h1 className="mb-8 text-3xl font-bold tracking-tight">Editar curso</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Editar curso</h1>
+        <AiQuizGenerator 
+          courseId={courseId} 
+          tituloCurso={course.titulo} 
+          sections={sections ?? []} 
+        />
+      </div>
 
       <section className="mb-10">
         <h2 className="mb-4 text-lg font-semibold">Informacion del curso</h2>
@@ -53,7 +64,10 @@ export default async function EditCoursePage({
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-zinc-700">Descripcion</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-medium text-zinc-700">Descripcion</label>
+              <AiDescriptionButton titulo={course.titulo} categoryName={categoryName} />
+            </div>
             <textarea
               name="descripcion"
               defaultValue={course.descripcion}
@@ -164,6 +178,10 @@ export default async function EditCoursePage({
             action={createSection.bind(null, courseId)}
             className="flex flex-col gap-3 border-t border-zinc-100 p-4"
           >
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-xs font-semibold text-zinc-500">¿Sin ideas?</span>
+              <AiSectionButton tituloCurso={course.titulo} />
+            </div>
             <input
               name="titulo"
               placeholder="Titulo de la seccion"

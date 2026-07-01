@@ -1,39 +1,61 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logAiUsage } from "./logger";
 
-const apiKey = process.env.GEMINI_API_KEY!;
-const genAI = new GoogleGenerativeAI(apiKey);
+const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const API_KEY = process.env.OPENROUTER_API_KEY_1 || process.env.GEMINI_API_KEY!;
 
 export async function analyzeImage(
   imageBase64: string,
   prompt: string
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   try {
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          mimeType: "image/png",
-          data: imageBase64,
-        },
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
       },
-    ]);
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/png;base64,${imageBase64}`,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+    });
 
-    const text = result.response.text();
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`OpenRouter-GeminiVision: ${res.status} - ${err}`);
+    }
+
+    const data = await res.json();
+    const prompt_tokens = data.usage?.prompt_tokens ?? 0;
+    const completion_tokens = data.usage?.completion_tokens ?? 0;
+
     // Registrar consumo exitoso
     await logAiUsage({
       proveedor: "GEMINI",
-      modelo: "gemini-2.0-flash",
+      modelo: "gemini-2.0-flash-vision",
+      prompt_tokens,
+      completion_tokens,
       exito: true,
     });
-    return text;
+    return data.choices[0].message.content;
   } catch (err: any) {
     // Registrar consumo fallido
     await logAiUsage({
       proveedor: "GEMINI",
-      modelo: "gemini-2.0-flash",
+      modelo: "gemini-2.0-flash-vision",
       exito: false,
       error: err.message,
     });
@@ -45,21 +67,43 @@ export async function generateText(
   prompt: string,
   systemInstruction?: string
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    systemInstruction,
-  });
-
   try {
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const messages = [];
+    if (systemInstruction) {
+      messages.push({ role: "system", content: systemInstruction });
+    }
+    messages.push({ role: "user", content: prompt });
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash",
+        messages,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`OpenRouter-Gemini: ${res.status} - ${err}`);
+    }
+
+    const data = await res.json();
+    const prompt_tokens = data.usage?.prompt_tokens ?? 0;
+    const completion_tokens = data.usage?.completion_tokens ?? 0;
+
     // Registrar consumo exitoso
     await logAiUsage({
       proveedor: "GEMINI",
       modelo: "gemini-2.0-flash",
+      prompt_tokens,
+      completion_tokens,
       exito: true,
     });
-    return text;
+    return data.choices[0].message.content;
   } catch (err: any) {
     // Registrar consumo fallido
     await logAiUsage({
