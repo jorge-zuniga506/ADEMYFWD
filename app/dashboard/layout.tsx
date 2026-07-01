@@ -19,7 +19,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import AiSupportChat from "@/components/ai/AiSupportChat";
-import DashboardMobileNav from "@/components/DashboardMobileNav";
+import DashboardMobileNav, { type NavItemSerialized } from "@/components/DashboardMobileNav";
 
 export default async function DashboardRootLayout({
   children,
@@ -39,7 +39,9 @@ export default async function DashboardRootLayout({
   const rol = perfil?.rol;
   const nombre = perfil?.nombre ?? user.email?.split("@")[0] ?? "Usuario";
 
-  const navItems = [
+  // Items para el SIDEBAR desktop (con componente de icono)
+  type SidebarItem = { href: string; label: string; icon: typeof LayoutDashboard };
+  const navItems: SidebarItem[] = [
     { href: "/dashboard", label: "Inicio", icon: LayoutDashboard },
   ];
 
@@ -67,7 +69,7 @@ export default async function DashboardRootLayout({
   if (rol === "ADMIN") {
     navItems.push(
       { href: "/dashboard/admin/verificacion", label: "Verificacion", icon: ShieldCheck },
-      { href: "/dashboard/admin/instructores-vip", label: "Instructores VIP+FWD", icon: Crown },
+      { href: "/dashboard/admin/instructores-vip", label: "Instructores VIP", icon: Crown },
       { href: "/dashboard/admin/membresias", label: "Membresías", icon: DollarSign },
       { href: "/dashboard/admin/cursos", label: "Auditoria", icon: BookOpen },
       { href: "/dashboard/admin/financiero", label: "Financiero", icon: DollarSign },
@@ -83,8 +85,14 @@ export default async function DashboardRootLayout({
     );
   }
 
-  // Items destacados para la barra inferior móvil (máx. 5)
-  const mobileBottomItems = navItems.slice(0, 5);
+  // Convertir a formato serializable (solo strings) para el Client Component móvil
+  const navItemsSerialized: NavItemSerialized[] = navItems.map((item) => ({
+    href: item.href,
+    label: item.label,
+    iconName: item.icon.displayName ?? item.icon.name ?? "LayoutDashboard",
+  }));
+
+  const mobileBottomItems = navItemsSerialized.slice(0, 5);
 
   return (
     <>
@@ -125,11 +133,15 @@ export default async function DashboardRootLayout({
         </aside>
 
         {/* Contenido principal */}
-        <div className="min-w-0 flex-1 min-h-0">{children}</div>
+        <div className="min-w-0 flex-1">{children}</div>
       </div>
 
-      {/* Bottom Navigation — solo en móvil/tablet */}
-      <DashboardMobileNav items={mobileBottomItems} allItems={navItems} nombre={nombre} />
+      {/* Bottom Navigation móvil — recibe solo strings serializables */}
+      <DashboardMobileNav
+        items={mobileBottomItems}
+        allItems={navItemsSerialized}
+        nombre={nombre}
+      />
 
       {/* Chat IA */}
       <AiSupportChat userRol={rol ?? "ESTUDIANTE"} />
