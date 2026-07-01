@@ -14,7 +14,7 @@ export default function AiSupportChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "¡Hola! Soy FWD-Bot, tu asistente inteligente de soporte técnico. ¿En qué puedo ayudarte hoy con la plataforma U-Forward Academy?"
+      content: "¡Hola! Soy Ademy, tu asistente inteligente de soporte técnico. ¿En qué puedo ayudarte hoy con la plataforma U-Forward Academy?"
     }
   ]);
   const [inputVal, setInputVal] = useState("");
@@ -88,7 +88,7 @@ export default function AiSupportChat() {
               </div>
               <div>
                 <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  FWD-Bot
+                  Ademy
                   <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                 </h4>
                 <p className="text-[9px] text-zinc-500 font-medium uppercase tracking-wider">Asistente de Soporte IA</p>
