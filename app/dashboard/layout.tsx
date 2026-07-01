@@ -18,6 +18,7 @@ import {
   Crown,
   ChevronLeft,
 } from "lucide-react";
+import AiSupportChat from "@/components/ai/AiSupportChat";
 
 export default async function DashboardRootLayout({
   children,
@@ -117,6 +118,7 @@ export default async function DashboardRootLayout({
       </aside>
 
       <div className="min-w-0 flex-1">{children}</div>
+      <AiSupportChat />
     </div>
   );
 }

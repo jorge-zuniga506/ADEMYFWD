@@ -13,6 +13,7 @@ import DeleteForm from "./DeleteForm";
 import AiDescriptionButton from "@/components/ai/AiDescriptionButton";
 import AiSectionButton from "@/components/ai/AiSectionButton";
 import AiQuizGenerator from "@/components/ai/AiQuizGenerator";
+import AiModerationButton from "@/components/ai/AiModerationButton";
 
 export default async function EditCoursePage({
   params,
@@ -26,7 +27,7 @@ export default async function EditCoursePage({
 
   const { data: course } = await supabase
     .from("Course")
-    .select("id, titulo, descripcion, precio, esExclusivoFwd, categoryId, instructorId, videoUrl, duracionHoras")
+    .select("id, titulo, descripcion, precio, esExclusivoFwd, categoryId, instructorId, videoUrl, duracionHoras, estado")
     .eq("id", courseId)
     .single();
   if (!course || course.instructorId !== user.id) notFound();
@@ -51,7 +52,21 @@ export default async function EditCoursePage({
       </div>
 
       <section className="mb-10">
-        <h2 className="mb-4 text-lg font-semibold">Informacion del curso</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+          <h2 className="text-lg font-semibold">Informacion del curso</h2>
+          <div className="flex items-center gap-2">
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              course.estado === 'PUBLICADO' 
+                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400' 
+                : course.estado === 'EN_REVISION' 
+                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400' 
+                  : 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400'
+            }`}>
+              Estado: {course.estado}
+            </span>
+            <AiModerationButton courseId={courseId} estadoActual={course.estado ?? "BORRADOR"} />
+          </div>
+        </div>
         <form action={updateCourse.bind(null, courseId)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-zinc-700">Titulo</label>
