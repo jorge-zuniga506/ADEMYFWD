@@ -1,0 +1,56 @@
+/* =========================================================
+   Skeleton shimmer animation — available platform-wide
+   ========================================================= */
+
+/* Base shimmer keyframe */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+
+@keyframes skeleton-wave {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(39, 39, 42, 0.8); /* zinc-800 */
+  border-radius: 0.5rem;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 60%,
+    transparent 100%
+  );
+  animation: skeleton-wave 1.6s ease-in-out infinite;
+}
+
+.skeleton-light {
+  background: rgba(228, 228, 231, 0.5); /* zinc-200 */
+}
+
+.skeleton-light::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.5) 60%,
+    transparent 100%
+  );
+}
