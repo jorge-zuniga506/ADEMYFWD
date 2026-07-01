@@ -5,7 +5,8 @@ const API_KEY = process.env.OPENROUTER_API_KEY_1 || process.env.KIMI_API_KEY!;
 
 export async function analyzeDocument(
   content: string,
-  task: string
+  task: string,
+  userId?: string
 ): Promise<string> {
   try {
     const res = await fetch(API_URL, {
@@ -28,7 +29,7 @@ export async function analyzeDocument(
 
     if (!res.ok) {
       // Fallback automático si Moonshot en OpenRouter falla o tiene problemas
-      return await fallbackGPT(content, task);
+      return await fallbackGPT(content, task, userId);
     }
 
     const data = await res.json();
@@ -42,13 +43,14 @@ export async function analyzeDocument(
       prompt_tokens,
       completion_tokens,
       exito: true,
+      userId,
     });
 
     return data.choices[0].message.content;
   } catch (err: any) {
     // Intentar fallback si ocurre cualquier error de red/fetch
     try {
-      return await fallbackGPT(content, task);
+      return await fallbackGPT(content, task, userId);
     } catch (fallbackErr: any) {
       // Registrar consumo fallido si el fallback también falla
       await logAiUsage({
@@ -56,13 +58,14 @@ export async function analyzeDocument(
         modelo: "moonshotco/kimi-latest",
         exito: false,
         error: `Moonshot Error: ${err.message} | Fallback Error: ${fallbackErr.message}`,
+        userId,
       });
       throw err;
     }
   }
 }
 
-async function fallbackGPT(content: string, task: string): Promise<string> {
+async function fallbackGPT(content: string, task: string, userId?: string): Promise<string> {
   const res = await fetch(API_URL, {
     method: "POST",
     headers: {
@@ -96,6 +99,7 @@ async function fallbackGPT(content: string, task: string): Promise<string> {
     prompt_tokens,
     completion_tokens,
     exito: true,
+    userId,
   });
 
   return data.choices[0].message.content;
@@ -103,10 +107,12 @@ async function fallbackGPT(content: string, task: string): Promise<string> {
 
 export async function analyzeLongText(
   text: string,
-  question: string
+  question: string,
+  userId?: string
 ): Promise<string> {
   return analyzeDocument(
     text,
-    `Responde la siguiente pregunta basandote en el texto proporcionado: ${question}`
+    `Responde la siguiente pregunta basandote en el texto proporcionado: ${question}`,
+    userId
   );
 }

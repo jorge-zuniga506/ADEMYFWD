@@ -5,7 +5,8 @@ const API_KEY = process.env.OPENROUTER_API_KEY_1 || process.env.GEMINI_API_KEY!;
 
 export async function analyzeImage(
   imageBase64: string,
-  prompt: string
+  prompt: string,
+  userId?: string
 ): Promise<string> {
   try {
     const res = await fetch(API_URL, {
@@ -49,6 +50,7 @@ export async function analyzeImage(
       prompt_tokens,
       completion_tokens,
       exito: true,
+      userId,
     });
     return data.choices[0].message.content;
   } catch (err: any) {
@@ -58,6 +60,7 @@ export async function analyzeImage(
       modelo: "gemini-2.0-flash-vision",
       exito: false,
       error: err.message,
+      userId,
     });
     throw err;
   }
@@ -65,7 +68,8 @@ export async function analyzeImage(
 
 export async function generateText(
   prompt: string,
-  systemInstruction?: string
+  systemInstruction?: string,
+  userId?: string
 ): Promise<string> {
   try {
     const messages = [];
@@ -102,6 +106,7 @@ export async function generateText(
       prompt_tokens,
       completion_tokens,
       exito: true,
+      userId,
     });
     return data.choices[0].message.content;
   } catch (err: any) {
@@ -111,13 +116,15 @@ export async function generateText(
       modelo: "gemini-2.0-flash",
       exito: false,
       error: err.message,
+      userId,
     });
     throw err;
   }
 }
 
 export async function verifyCertificate(
-  certificateBase64: string
+  certificateBase64: string,
+  userId?: string
 ): Promise<{
   valido: boolean;
   nombre: string;
@@ -135,7 +142,8 @@ export async function verifyCertificate(
     - Tu nivel de confianza (0-100)
     
     Responde SOLO con JSON valido:
-    {"valido": true/false, "nombre": "...", "institucion": "...", "fecha": "...", "confianza": 0}`
+    {"valido": true/false, "nombre": "...", "institucion": "...", "fecha": "...", "confianza": 0}`,
+    userId
   );
 
   try {

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { ai } from "@/lib/ai/client";
+import { checkAiLimit } from "@/lib/ai/logger";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -14,6 +15,9 @@ export async function optimizeCourseDescriptionAction(
 ): Promise<string> {
   const { data: { user } } = await (await createClient()).auth.getUser();
   if (!user) throw new Error("No autorizado");
+
+  // Validar límites de IA
+  await checkAiLimit(user.id);
 
   const prompt = `Optimiza y haz persuasiva esta descripción de curso para un catálogo académico.
 Título del curso: "${titulo}"
@@ -30,10 +34,10 @@ Requisitos:
     const optimized = await ai.openrouter.chat([
       { role: "system", content: "Eres un redactor experto en marketing de educación tecnológica." },
       { role: "user", content: prompt }
-    ]);
+    ], undefined, user.id);
     return optimized.trim();
   } catch (err: any) {
-    throw new Error(`Error de IA: ${err.message}`);
+    throw new Error(err.message || "Error de IA");
   }
 }
 
@@ -46,6 +50,9 @@ export async function suggestSectionAction(
   const { data: { user } } = await (await createClient()).auth.getUser();
   if (!user) throw new Error("No autorizado");
 
+  // Validar límites de IA
+  await checkAiLimit(user.id);
+
   const prompt = `Basándote en el título del curso "${tituloCurso}", sugiere un título de sección temático y muy profesional que encaje en el temario del curso.
 Responde ÚNICAMENTE con el título de la sección sugerido en español (máximo 6 palabras), sin comillas ni preámbulos.`;
 
@@ -53,10 +60,10 @@ Responde ÚNICAMENTE con el título de la sección sugerido en español (máximo
     const sugerida = await ai.openrouter.chat([
       { role: "system", content: "Eres un diseñador curricular experto en tecnología." },
       { role: "user", content: prompt }
-    ]);
+    ], undefined, user.id);
     return sugerida.trim().replace(/^"|"$/g, '');
   } catch (err: any) {
-    throw new Error(`Error de IA: ${err.message}`);
+    throw new Error(err.message || "Error de IA");
   }
 }
 
@@ -69,6 +76,9 @@ export async function generateCourseQuizAction(
 ): Promise<string> {
   const { data: { user } } = await (await createClient()).auth.getUser();
   if (!user) throw new Error("No autorizado");
+
+  // Validar límites de IA
+  await checkAiLimit(user.id);
 
   const prompt = `Crea un examen formal de evaluación de 10 preguntas para el curso "${tituloCurso}".
 Temario del curso (secciones):
@@ -107,10 +117,10 @@ Responde ÚNICAMENTE con el examen formateado en texto plano según el ejemplo a
     const examen = await ai.openrouter.chat([
       { role: "system", content: "Eres un profesor y evaluador de ciencias de la computación muy riguroso." },
       { role: "user", content: prompt }
-    ]);
+    ], undefined, user.id);
     return examen.trim();
   } catch (err: any) {
-    throw new Error(`Error de IA: ${err.message}`);
+    throw new Error(err.message || "Error de IA");
   }
 }
 

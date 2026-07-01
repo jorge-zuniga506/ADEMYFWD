@@ -3,12 +3,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { ai } from "@/lib/ai/client";
 import { sendEmailWithTemplate } from "@/lib/email";
+import { checkAiLimit } from "@/lib/ai/logger";
 import { revalidatePath } from "next/cache";
 
 export async function submitCourseToAiReviewAction(courseId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("No autorizado");
+
+  // Validar límites de IA
+  await checkAiLimit(user.id);
 
   // 1. Obtener la información del curso con sus secciones y lecciones
   const { data: course, error: fetchErr } = await (supabase as any)
@@ -79,7 +83,7 @@ Formato de respuesta:
         content: "Eres un auditor curricular de inteligencia artificial y control de calidad académica de U-Forward Academy."
       },
       { role: "user", content: prompt }
-    ]);
+    ], undefined, user.id);
 
     // Limpiar respuesta de bloques markdown si existieran
     const jsonStr = aiResult.trim().replace(/^```json|```$/g, "").trim();
@@ -159,7 +163,7 @@ Formato de respuesta:
       .eq("id", courseId);
       
     revalidatePath(`/dashboard/instructor/${courseId}`);
-    throw new Error(`Error en el proceso de revisión por IA: ${err.message}`);
+    throw new Error(err.message || "Error en el proceso de revisión por IA");
   }
 }
 
@@ -169,6 +173,13 @@ Formato de respuesta:
 export async function askAiSupportAction(
   chatHistory: { role: "user" | "assistant" | "system"; content: string }[]
 ): Promise<string> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("No autorizado");
+
+  // Validar límites de IA
+  await checkAiLimit(user.id);
+
   const systemPrompt = {
     role: "system" as const,
     content: `Eres Ademy, el asistente inteligente oficial de soporte técnico de U-Forward Academy (ADEMYFWD).
@@ -189,9 +200,9 @@ Pautas de comportamiento:
   const messages = [systemPrompt, ...chatHistory];
 
   try {
-    const response = await ai.openrouter.chat(messages);
+    const response = await ai.openrouter.chat(messages, undefined, user.id);
     return response.trim();
   } catch (err: any) {
-    throw new Error(`Error del asistente de soporte: ${err.message}`);
+    throw new Error(err.message || "Error del asistente de soporte");
   }
 }

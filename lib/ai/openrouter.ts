@@ -5,7 +5,8 @@ const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 async function createCompletion(
   model: string,
   messages: { role: string; content: string }[],
-  apiKey: string
+  apiKey: string,
+  userId?: string
 ): Promise<string> {
   try {
     const res = await fetch(API_URL, {
@@ -33,6 +34,7 @@ async function createCompletion(
       prompt_tokens,
       completion_tokens,
       exito: true,
+      userId,
     });
 
     return data.choices[0].message.content;
@@ -43,6 +45,7 @@ async function createCompletion(
       modelo: model,
       exito: false,
       error: err.message,
+      userId,
     });
     throw err;
   }
@@ -62,7 +65,8 @@ function getNextKey(): string {
 
 export async function generateCourseDescription(
   titulo: string,
-  category: string
+  category: string,
+  userId?: string
 ): Promise<string> {
   return createCompletion(
     "openai/gpt-4o-mini",
@@ -77,12 +81,14 @@ export async function generateCourseDescription(
         content: `Crea una descripcion de curso para "${titulo}" en la categoria "${category}". Incluye: que aprenderan, requisitos, y para quien es. Maximo 200 palabras.`,
       },
     ],
-    getNextKey()
+    getNextKey(),
+    userId
   );
 }
 
 export async function generateReviewResponse(
-  review: string
+  review: string,
+  userId?: string
 ): Promise<string> {
   return createCompletion(
     "openai/gpt-4o-mini",
@@ -94,17 +100,20 @@ export async function generateReviewResponse(
       },
       { role: "user", content: `Responde a esta resena de un estudiante: "${review}"` },
     ],
-    getNextKey()
+    getNextKey(),
+    userId
   );
 }
 
 export async function chat(
   messages: { role: string; content: string }[],
-  options?: { model?: string }
+  options?: { model?: string },
+  userId?: string
 ): Promise<string> {
   return createCompletion(
     options?.model ?? "openai/gpt-4o-mini",
     messages,
-    getNextKey()
+    getNextKey(),
+    userId
   );
 }
