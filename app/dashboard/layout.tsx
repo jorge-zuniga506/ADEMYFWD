@@ -19,6 +19,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import AiSupportChat from "@/components/ai/AiSupportChat";
+import DashboardMobileNav from "@/components/DashboardMobileNav";
 
 export default async function DashboardRootLayout({
   children,
@@ -82,43 +83,56 @@ export default async function DashboardRootLayout({
     );
   }
 
+  // Items destacados para la barra inferior móvil (máx. 5)
+  const mobileBottomItems = navItems.slice(0, 5);
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 gap-6 px-4 py-8">
-      <aside className="hidden w-56 shrink-0 lg:block">
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Inicio
-        </Link>
+    <>
+      {/* Layout principal */}
+      <div className="mx-auto flex w-full max-w-6xl flex-1 gap-6 px-4 py-6 pb-24 lg:pb-8">
+        {/* Sidebar — solo en desktop */}
+        <aside className="hidden lg:flex w-56 shrink-0 flex-col gap-1">
+          <Link
+            href="/"
+            className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Inicio
+          </Link>
 
-        <p className="mb-3 truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          {nombre}
-        </p>
-
-        {!rol && (
-          <p className="mb-3 text-xs text-amber-600 dark:text-amber-400">
-            Perfil incompleto — ejecuta <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">npm run seed</code>
+          <p className="mb-3 truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            {nombre}
           </p>
-        )}
 
-        <nav className="flex flex-col gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
-              <item.icon className="h-4 w-4 shrink-0 text-zinc-400" />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+          {!rol && (
+            <p className="mb-3 text-xs text-amber-600 dark:text-amber-400">
+              Perfil incompleto — ejecuta <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">npm run seed</code>
+            </p>
+          )}
 
-      <div className="min-w-0 flex-1">{children}</div>
+          <nav className="flex flex-col gap-0.5">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                <item.icon className="h-4 w-4 shrink-0 text-zinc-400" />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Contenido principal */}
+        <div className="min-w-0 flex-1 min-h-0">{children}</div>
+      </div>
+
+      {/* Bottom Navigation — solo en móvil/tablet */}
+      <DashboardMobileNav items={mobileBottomItems} allItems={navItems} nombre={nombre} />
+
+      {/* Chat IA */}
       <AiSupportChat userRol={rol ?? "ESTUDIANTE"} />
-    </div>
+    </>
   );
 }

@@ -97,7 +97,7 @@ export default function AiSupportChat({ userRol = "ESTUDIANTE" }: AiSupportChatP
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-50 font-sans">
       {/* Botón Flotante de Apertura */}
       {!isOpen && (
         <button
