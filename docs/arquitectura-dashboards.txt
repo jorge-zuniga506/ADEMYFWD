@@ -1,0 +1,101 @@
+ARQUITECTURA DE DASHBOARDS - FWD Academy
+=========================================
+
+INDICE
+1. Dashboard Administrativo (Admin)
+2. Dashboard de Instructor
+3. Dashboard de Estudiante
+
+
+1. DASHBOARD ADMINISTRATIVO
+---------------------------
+5 modulos principales:
+
+1.1 Centro de Verificacion (Filtro Anti-Estafas)
+  - Aprobacion FWD: Revisar certificado Full-Stack subido. Admin visualiza PDF,
+    hace clic en "Aprobar" (cambia rol a GRADUADO_FWD) o "Rechazar" (correo automatico).
+  - Validacion de Identidad (KYC): Revisar identificacion oficial y portafolio de instructores.
+
+1.2 Auditoria de Cursos (Control de Calidad)
+  - Cursos en estado "Revision" al ser publicados por instructor.
+  - Verificar reglas: minimo 2h, maximo 20h de contenido.
+  - Revision del trailer (YouTube).
+  - Boton "Publicar Curso" o "Devolver al Instructor" con notas.
+
+1.3 Centro Financiero y Pagos
+  - Metricas globales: ingresos del mes, ventas por dia, comision plataforma.
+  - Gestion de Retiros (Payouts): instructores solicitan retiro, admin marca "Transferido".
+  - Reembolsos: procesar devoluciones dentro del periodo de garantia.
+
+1.4 Gestion de Usuarios (Moderacion)
+  - Tabla maestra conectada a tabla User con busqueda por nombre o correo.
+  - Suspensiones y baneos.
+  - Gestion de accesos: resetear contrasenas, cambiar roles.
+
+1.5 Moderacion del Ecosistema VIP
+  - Auditoria del foro: eliminar codigo o publicaciones inapropiadas.
+  - Revision de vacantes: aprobar/rechazar ofertas de trabajo.
+
+
+2. DASHBOARD DE INSTRUCTOR
+---------------------------
+5 secciones clave:
+
+2.1 Panel de Metricas (Vision General)
+  - Grafico financiero: ganancias ultimos 30 dias.
+  - Contador: alumnos nuevos matriculados.
+  - Calificacion promedio (1-5 estrellas).
+
+2.2 Gestor de Cursos (Motor de Contenido)
+  - Lista de cursos por estado: "Borrador", "En Revision", "Publicados".
+  - Constructor (Builder):
+    * Pegar link YouTube para trailer.
+    * Crear modulos y subir videos (validacion: 2h - 20h).
+    * Adjuntar recursos descargables (PDFs, codigo fuente).
+    * Asignar precio final.
+
+2.3 Centro de Interaccion y Mentoria (Classroom)
+  - Bandeja de Preguntas (Q&A): foro interno, dudas sobre minuto exacto de video.
+  - Gestor de Aulas en Vivo: enlaces Google Meet/Zoom/Teams, fecha y hora.
+  - Anuncios: correo masivo a estudiantes matriculados.
+
+2.4 Billetera y Finanzas
+  - Saldo disponible listo para transferir.
+  - Solicitud de Retiro (Payout): cuenta bancaria o PayPal.
+  - Historial de Transacciones: reportes descargables.
+
+2.5 Configuracion de Marca Personal
+  - Edicion de perfil publico: biografia tecnica, fotografia corporativa, LinkedIn.
+
+
+3. DASHBOARD DE ESTUDIANTE
+---------------------------
+5 secciones clave:
+
+3.1 Mi Aprendizaje (Dashboard Principal)
+  - Continuar Viendo: reproductor miniatura con ultimo video, boton "Reanudar clase".
+  - Cuadricula de Cursos: tarjetas con titulo, instructor, barra de progreso.
+  - Cursos Archivados: pestana para ocultar cursos terminados.
+
+3.2 El Aula Virtual (Reproductor Inmersivo)
+  - Dark mode, video central, temario lateral colapsable.
+  - Centro de Recursos: descarga de archivos, PDFs, enlaces externos.
+  - Acceso a Mentorias en Vivo: boton a Zoom/Meet.
+
+3.3 Interaccion y Soporte Comunitario
+  - Pestana de Preguntas (Q&A): buscador + campo de texto.
+  - Dejar una Resena: automatico al superar 20% del curso.
+
+3.4 Logros y Certificaciones
+  - Muro de Certificados: galeria, descarga PDF, compartir a LinkedIn.
+  - Insignias de Habilidad: reconocimientos visuales.
+
+3.5 Configuracion y Estado de Cuenta
+  - Historial de Compras: lista de pagos, descarga factura.
+  - Centro de Verificacion FWD: boton "Soy graduado FWD: Validar mi titulo".
+
+
+TECNOLOGIAS PLANIFICADAS
+-------------------------
+- IA: OpenRouter para generacion de contenido (descripciones, resenas, etc.)
+- APIs: pendiente de definir (pagos, email, almacenamiento)

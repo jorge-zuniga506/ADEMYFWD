@@ -1,0 +1,95 @@
+Documento Maestro: Taxonomia y Categorias de Cursos
+Proyecto: Plataforma Educativa de Desarrollo y Tecnologia
+Tipo de Documento: Arquitectura de Catalogo y Base de Datos
+
+Resumen de la Estructura
+Para que la plataforma soporte miles de proyectos y cursos como las grandes empresas de la industria, la base de datos debe clasificar el contenido en un modelo de tres niveles: Categoria Principal > Subcategoria > Tema Especifico. Esto permite que el buscador sea exacto y el usuario encuentre justo lo que necesita.
+
+A continuacion, se detalla el arbol de categorias oficiales que se registraran en la tabla Categories de la base de datos.
+
+1. Desarrollo Backend y Arquitectura de Servidores
+Enfocado en la logica de negocio, seguridad y rendimiento detras de escena.
+
+Fundamentos Backend: Logica de programacion, algoritmos y estructuras de datos.
+
+Creacion y Consumo de APIs:
+
+Arquitectura RESTful.
+
+GraphQL.
+
+Integracion de APIs de terceros (pasarelas de pago, servicios externos).
+
+Entornos y Lenguajes: Node.js, Python, Java, C#.
+
+Frameworks Backend: Express, NestJS, Django, Spring Boot (Instalacion, configuracion y despliegue).
+
+Arquitectura de Software: Microservicios, Serverless, Patrones de Diseno.
+
+2. Bases de Datos y Almacenamiento
+Todo lo relacionado con la persistencia, manipulacion y seguridad de la informacion.
+
+Bases de Datos Relacionales (SQL): PostgreSQL, MySQL (Consultas avanzadas, triggers, vistas).
+
+Bases de Datos No Relacionales (NoSQL): MongoDB, Redis, Firebase.
+
+Plataformas Backend-as-a-Service (BaaS): Supabase, Appwrite.
+
+ORMs y Modelado de Datos: Prisma, TypeORM, Sequelize, Mongoose.
+
+Administracion y Seguridad: Respaldos, migraciones, optimizacion de consultas complejas.
+
+3. Desarrollo Frontend y Experiencia de Usuario
+Construccion de interfaces de alto rendimiento y consumo de servicios.
+
+Librerias y Frameworks UI: React, Vue.js, Angular, Svelte.
+
+Frameworks Full-Stack (Meta-frameworks): Next.js, Nuxt, Remix.
+
+Estilos y Arquitectura CSS: Tailwind CSS, Sass, Styled Components, CSS Modules.
+
+Estado y Gestion de Datos: Redux, Zustand, React Query, Context API.
+
+Diseno Profesional: Figma para desarrolladores, sistemas de diseno, accesibilidad web (a11y).
+
+4. Desarrollo Movil (iOS y Android)
+Creacion de aplicaciones nativas y multiplataforma para dispositivos inteligentes.
+
+Desarrollo Multiplataforma: React Native, Flutter, .NET MAUI.
+
+Desarrollo Nativo iOS: Swift, SwiftUI, Objective-C, publicacion en el App Store.
+
+Desarrollo Nativo Android: Kotlin, Jetpack Compose, publicacion en Google Play Store.
+
+Bases de Datos Locales para Moviles: SQLite, Realm, WatermelonDB.
+
+5. Inteligencia Artificial y Herramientas Modernas
+Integracion de la nueva ola tecnologica en el desarrollo tradicional.
+
+Integracion de Modelos (LLMs): Uso de APIs de OpenAI, Claude, Gemini, DeepSeek.
+
+Automatizacion: Creacion de agentes autonomos, procesamiento de documentos, chatbots.
+
+Herramientas de Productividad: GitHub Copilot, Cursor, entornos de desarrollo asistidos.
+
+6. DevOps, Control de Versiones y Despliegue
+Las herramientas para llevar el codigo desde la computadora del programador hasta servidores reales en produccion.
+
+Control de Versiones: Git avanzado (Manejo de ramas, resolucion de conflictos, merge, rebase).
+
+Plataformas de Repositorios: GitHub, GitLab, Bitbucket.
+
+Hosting y Despliegue: Vercel, Cloudflare, AWS, DigitalOcean, Heroku.
+
+Contenedores: Docker, Kubernetes.
+
+7. Desarrollo Profesional y Carrera (Soft Skills)
+Para cumplir con el objetivo de "como ser mejor" profesional, esta categoria separa al programador novato del ingeniero de software de alto valor.
+
+Preparacion para Entrevistas: Resolucion de pruebas tecnicas, algoritmos de pizarra.
+
+Mercado Laboral: Como crear un portafolio de alto impacto, redaccion de curriculum tecnico.
+
+Freelance y Negocios: Como cotizar proyectos de software, gestion de clientes, contratos legales.
+
+Metodologias de Trabajo: Scrum, Kanban, metodologias agiles y gestion de tableros.
