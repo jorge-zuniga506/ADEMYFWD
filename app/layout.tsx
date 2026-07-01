@@ -4,6 +4,7 @@ import "./globals.css";
 import "./skeleton.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,18 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        {/* Barra de progreso de navegación estilo GitHub — aparece instantáneamente */}
+        <NextTopLoader
+          color="linear-gradient(to right, #06b6d4, #a855f7, #ec4899)"
+          initialPosition={0.12}
+          crawlSpeed={150}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={250}
+          shadow="0 0 10px #a855f7, 0 0 6px #06b6d4"
+        />
         <Navbar />
         {children}
         <Footer />
