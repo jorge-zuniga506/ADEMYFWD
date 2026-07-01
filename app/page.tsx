@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import CourseCard from "@/components/CourseCard";
 import { Button } from "@/components/ui";
-import { ArrowRight, BookOpen, Search, GraduationCap, Briefcase, Star, LayoutDashboard, LogOut } from "lucide-react";
+import { ArrowRight, BookOpen, Search, GraduationCap, Briefcase, Star, LayoutDashboard, LogOut, Compass, Terminal, Users } from "lucide-react";
 import { LogoIcon } from "@/components/Logo";
 
 export default async function Home({
@@ -31,19 +31,6 @@ export default async function Home({
   }
 
   const { data: courses } = await query;
-
-  const { count: totalCursos } = await supabase
-    .from("Course")
-    .select("*", { count: "exact", head: true });
-
-  const { count: totalEstudiantes } = await supabase
-    .from("Enrollment")
-    .select("*", { count: "exact", head: true });
-
-  const { count: totalInstructores } = await supabase
-    .from("User")
-    .select("*", { count: "exact", head: true })
-    .in("rol", ["INSTRUCTOR", "ADMIN"]);
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-purple-500/30 dark">
@@ -85,20 +72,49 @@ export default async function Home({
         </div>
       </section>
 
-      {/* Stats counter strip */}
-      <section className="bg-zinc-950/40 border-b border-zinc-900 py-8 px-6">
-        <div className="mx-auto max-w-4xl grid grid-cols-3 gap-6 text-center">
-          <div className="space-y-1">
-            <p className="text-2xl font-black text-purple-400">{totalCursos ?? 0}</p>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Cursos activos</p>
+      {/* Tres Pilares de Valor */}
+      <section className="bg-zinc-950/40 border-b border-zinc-900 py-10 px-6 relative overflow-hidden">
+        {/* Subtle grid accent background */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30" />
+        
+        <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative z-10">
+          {/* Pilar 1: Rutas de Aprendizaje */}
+          <div className="flex items-start gap-4 group">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-purple-500/20 bg-purple-500/10 text-purple-400 transition-all duration-300 group-hover:scale-110 group-hover:border-purple-500/40 group-hover:bg-purple-500/15 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+              <Compass className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-100 font-mono">Rutas de Especialización</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Progreso estructurado desde conceptos básicos hasta un nivel técnico profesional.
+              </p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <p className="text-2xl font-black text-pink-400">{totalEstudiantes ?? 0}</p>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Estudiantes</p>
+
+          {/* Pilar 2: Enfoque Práctico */}
+          <div className="flex items-start gap-4 group">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-pink-500/20 bg-pink-500/10 text-pink-400 transition-all duration-300 group-hover:scale-110 group-hover:border-pink-500/40 group-hover:bg-pink-500/15 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]">
+              <Terminal className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-100 font-mono">Enfoque 100% Práctico</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Construye y despliega proyectos del mundo real para consolidar tu portafolio técnico.
+              </p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <p className="text-2xl font-black text-cyan-400">{totalInstructores ?? 0}</p>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono">Instructores</p>
+
+          {/* Pilar 3: Mentoría Activa */}
+          <div className="flex items-start gap-4 group">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 transition-all duration-300 group-hover:scale-110 group-hover:border-cyan-500/40 group-hover:bg-cyan-500/15 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+              <Users className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-100 font-mono">Soporte e Instructores</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+                Resuelve dudas de código directamente con instructores expertos en el área.
+              </p>
+            </div>
           </div>
         </div>
       </section>
