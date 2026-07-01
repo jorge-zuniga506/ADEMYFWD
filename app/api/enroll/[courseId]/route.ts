@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { notifyAdminWithTemplate } from "@/lib/email";
+import { notifyAdminWithTemplate, sendEmailWithTemplate } from "@/lib/email";
 
 function getServiceClient() {
   return createServiceClient(
@@ -47,6 +47,66 @@ export async function POST(
 
   if (error) {
     console.error("Supabase enrollment insert error:", error);
+  } else {
+    // Inscripción exitosa: Enviar correos al alumno y al instructor
+    try {
+      // Consultar curso e instructor
+      const { data: course } = await service
+        .from("Course")
+        .select(`
+          titulo, 
+          precio,
+          User:User (
+            nombre,
+            email
+          )
+        `)
+        .eq("id", courseId)
+        .single();
+
+      // Consultar estudiante
+      const { data: student } = await service
+        .from("User")
+        .select("nombre, email")
+        .eq("id", user.id)
+        .single();
+
+      if (course && student) {
+        const instructor = (course as any).User;
+
+        // 1. Enviar correo de bienvenida al estudiante
+        await sendEmailWithTemplate(
+          student.email,
+          `¡Te damos la bienvenida al curso: ${course.titulo}! 🚀`,
+          `¡Comienza tu aprendizaje hoy!`,
+          [
+            { label: "Curso", value: course.titulo },
+            { label: "Estudiante", value: student.nombre },
+            { label: "Fecha de Inicio", value: new Date().toLocaleDateString("es-ES") },
+          ],
+          `https://u-forward.vercel.app/courses/${courseId}`,
+          "IR AL AULA VIRTUAL"
+        );
+
+        // 2. Enviar correo de notificación al instructor
+        if (instructor?.email) {
+          await sendEmailWithTemplate(
+            instructor.email,
+            `¡Nuevo estudiante en tu curso: ${course.titulo}! 🎓`,
+            `¡Tu comunidad sigue creciendo!`,
+            [
+              { label: "Curso", value: course.titulo },
+              { label: "Estudiante", value: student.nombre },
+              { label: "Fecha de Registro", value: new Date().toLocaleDateString("es-ES") },
+            ],
+            `https://u-forward.vercel.app/dashboard/instructor`,
+            "VER PANEL DE INSTRUCTOR"
+          );
+        }
+      }
+    } catch (mailErr) {
+      console.error("Error al enviar correos de inscripción:", mailErr);
+    }
   }
 
   // Pro Max: the course is free for the student, but it still counts as a

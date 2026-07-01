@@ -12,7 +12,12 @@ function getTransport() {
   });
 }
 
-function generateEmailTemplate(title: string, details: { label: string; value: string }[]) {
+function generateEmailTemplate(
+  title: string,
+  details: { label: string; value: string }[],
+  ctaLink: string = "https://u-forward.vercel.app/dashboard",
+  ctaText: string = "IR AL PANEL DE CONTROL"
+) {
   const detailsHtml = details.map((d, index) => `
     <tr style="${index % 2 === 0 ? 'background-color: #121214;' : 'background-color: #161619;'}">
       <td style="padding: 16px 20px; border-bottom: 1px solid #1f1f23; font-size: 13px; color: #a1a1aa; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 500;">
@@ -109,8 +114,8 @@ function generateEmailTemplate(title: string, details: { label: string; value: s
         <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
           <tr>
             <td align="center" style="border-radius: 12px; background: linear-gradient(135deg, #06b6d4 0%, #7c3aed 100%); padding: 1px;">
-              <a href="https://u-forward.vercel.app/dashboard" target="_blank" style="background-color: #09090b; border-radius: 11px; display: block; padding: 14px 28px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: #ffffff; text-decoration: none; letter-spacing: 0.5px; transition: background 0.2s;">
-                IR AL PANEL DE CONTROL
+              <a href="${ctaLink}" target="_blank" style="background-color: #09090b; border-radius: 11px; display: block; padding: 14px 28px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: #ffffff; text-decoration: none; letter-spacing: 0.5px; transition: background 0.2s;">
+                ${ctaText}
               </a>
             </td>
           </tr>
@@ -134,6 +139,51 @@ function generateEmailTemplate(title: string, details: { label: string; value: s
 </body>
 </html>
   `;
+}
+
+/**
+ * Envia un correo electrónico con plantilla HTML premium a cualquier dirección.
+ */
+export async function sendEmailWithTemplate(
+  to: string,
+  subject: string,
+  title: string,
+  details: { label: string; value: string }[],
+  ctaLink: string = "https://u-forward.vercel.app/dashboard",
+  ctaText: string = "IR AL PANEL DE CONTROL"
+) {
+  const transport = getTransport();
+  const html = generateEmailTemplate(title, details, ctaLink, ctaText);
+
+  if (!transport) {
+    console.log(`[EMAIL SEND SIMULATION - no credentials] To: ${to} | Subject: ${subject}`);
+    return;
+  }
+
+  try {
+    await transport.sendMail({
+      from: process.env.GMAIL_USER,
+      to,
+      subject,
+      html,
+    });
+
+    // Registrar log de envío en Supabase
+    try {
+      const supabase = createServiceClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+      await (supabase as any).from("EmailLog").insert({
+        destinatario: to,
+        asunto: subject,
+      });
+    } catch (dbErr) {
+      console.error("Error al registrar log de email en Supabase:", dbErr);
+    }
+  } catch (err) {
+    console.error(`Error enviando email a ${to}:`, err);
+  }
 }
 
 export async function notifyAdmin(subject: string, html: string) {

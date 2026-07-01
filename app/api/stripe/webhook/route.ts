@@ -2,7 +2,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
-import { notifyAdminWithTemplate } from "@/lib/email";
+import { notifyAdminWithTemplate, sendEmailWithTemplate } from "@/lib/email";
 
 function getServiceClient() {
   return createServiceClient(
@@ -81,6 +81,28 @@ export async function POST(request: Request) {
           { label: "Fecha", value: new Date().toLocaleString() },
         ]
       );
+
+      // Enviar correo de confirmación de acceso VIP al estudiante
+      if (userData?.email) {
+        try {
+          await sendEmailWithTemplate(
+            userData.email,
+            `¡Tu acceso VIP a U-Forward+ está activo! 💎`,
+            `¡Te damos la bienvenida al nivel VIP!`,
+            [
+              { label: "Membresía", value: membership?.nombre ?? "Membresía VIP" },
+              { label: "Estudiante", value: userData.nombre },
+              { label: "Precio", value: `$${membership?.precio ?? 0}/mes` },
+              { label: "Estado del Acceso", value: "Activo (Renovación mensual)" },
+              { label: "Fecha de Activación", value: new Date().toLocaleDateString("es-ES") }
+            ],
+            `https://u-forward.vercel.app/cursos`,
+            "VER CATÁLOGO VIP U-FORWARD+"
+          );
+        } catch (mailErr) {
+          console.error("Error al enviar correo VIP al alumno:", mailErr);
+        }
+      }
       break;
     }
 
