@@ -15,7 +15,7 @@ export default async function QuestionDetailPage({
 
   const { data: question } = await supabase
     .from("Question")
-    .select("id, titulo, contenido, fechaCreacion, resuelta, userId, courseId, User!inner(nombre)")
+    .select("id, titulo, contenido, fechacreacion, resuelta, userid, courseid, User!inner(nombre)")
     .eq("id", id)
     .single();
 
@@ -24,17 +24,17 @@ export default async function QuestionDetailPage({
   const { data: course } = await supabase
     .from("Course")
     .select("instructorId")
-    .eq("id", question.courseId)
+    .eq("id", question.courseid)
     .single();
 
   const { data: respuestas } = await supabase
     .from("Respuesta")
-    .select("id, contenido, fechaCreacion, User!inner(nombre)")
-    .eq("questionId", id)
-    .order("fechaCreacion", { ascending: true });
+    .select("id, contenido, fechacreacion, User!inner(nombre)")
+    .eq("questionid", id)
+    .order("fechacreacion", { ascending: true });
 
   const autor = question.User as unknown as { nombre: string };
-  const esAutor = question.userId === user?.id || course?.instructorId === user?.id;
+  const esAutor = question.userid === user?.id || course?.instructorId === user?.id;
 
   return (
     <div>
@@ -51,7 +51,7 @@ export default async function QuestionDetailPage({
               )}
             </div>
             <p className="mt-1 text-sm text-zinc-500">
-              {autor.nombre} &middot; {new Date(question.fechaCreacion).toLocaleDateString()}
+              {autor.nombre} &middot; {new Date(question.fechacreacion).toLocaleDateString()}
             </p>
           </div>
           {esAutor && !question.resuelta && (
@@ -89,7 +89,7 @@ export default async function QuestionDetailPage({
                     </div>
                     <span className="text-sm font-medium">{respondio.nombre}</span>
                     <span className="text-xs text-zinc-400">
-                      {new Date(r.fechaCreacion).toLocaleDateString()}
+                      {new Date(r.fechacreacion).toLocaleDateString()}
                     </span>
                   </div>
                   <p className="text-sm text-zinc-700 dark:text-zinc-300">

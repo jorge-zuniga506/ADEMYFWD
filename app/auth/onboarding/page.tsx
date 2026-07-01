@@ -99,7 +99,7 @@ export default function OnboardingPage() {
         const { error } = await supabase.from("User").upsert({
           id: user.id,
           nombre: user.user_metadata?.full_name ?? user.user_metadata?.name ?? "Admin",
-          email: user.email,
+          email: user.email ?? "",
           passwordHash: "",
           rol: "ADMIN",
           onboardingDone: true,

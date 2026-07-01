@@ -10,9 +10,9 @@ export default async function QandaPage() {
 
   const { data: questions } = await supabase
     .from("Question")
-    .select("id, titulo, contenido, courseId, fechaCreacion, resuelta, User!inner(nombre)")
-    .eq("userId", user!.id)
-    .order("fechaCreacion", { ascending: false });
+    .select("id, titulo, contenido, courseid, fechacreacion, resuelta, User!inner(nombre)")
+    .eq("userid", user!.id)
+    .order("fechacreacion", { ascending: false });
 
   const { data: courses } = await supabase
     .from("Enrollment")
@@ -111,7 +111,7 @@ export default async function QandaPage() {
                     {q.contenido}
                   </p>
                   <p className="mt-2 text-xs text-zinc-400">
-                    {autor.nombre} &middot; {new Date(q.fechaCreacion).toLocaleDateString()}
+                    {autor.nombre} &middot; {new Date(q.fechacreacion).toLocaleDateString()}
                   </p>
                 </Link>
 

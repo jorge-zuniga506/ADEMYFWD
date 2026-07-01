@@ -71,7 +71,7 @@ export async function updateProfile(formData: FormData) {
 
   await supabase
     .from("User")
-    .update(updatePayload)
+    .update(updatePayload as any)
     .eq("id", user.id);
 
   revalidatePath("/dashboard/instructor/perfil");

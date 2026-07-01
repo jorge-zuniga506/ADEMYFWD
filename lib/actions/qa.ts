@@ -14,8 +14,8 @@ export async function createQuestion(formData: FormData) {
   const courseId = formData.get("courseId") as string;
 
   const { error } = await supabase.from("Question").insert({
-    userId: user.id,
-    courseId,
+    userid: user.id,
+    courseid: courseId,
     titulo,
     contenido,
   });
@@ -34,8 +34,8 @@ export async function createRespuesta(formData: FormData) {
   const questionId = formData.get("questionId") as string;
 
   const { error } = await supabase.from("Respuesta").insert({
-    userId: user.id,
-    questionId,
+    userid: user.id,
+    questionid: questionId,
     contenido,
   });
 
@@ -52,7 +52,7 @@ export async function marcarResuelta(questionId: string) {
     .from("Question")
     .update({ resuelta: true })
     .eq("id", questionId)
-    .eq("userId", user.id);
+    .eq("userid", user.id);
 
   revalidatePath(`/dashboard/student/qanda/${questionId}`);
 }
@@ -66,7 +66,7 @@ export async function deleteQuestion(questionId: string) {
     .from("Question")
     .delete()
     .eq("id", questionId)
-    .eq("userId", user.id);
+    .eq("userid", user.id);
 
   revalidatePath("/dashboard/student/qanda");
 }

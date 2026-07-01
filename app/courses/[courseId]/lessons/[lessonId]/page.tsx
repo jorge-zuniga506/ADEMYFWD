@@ -63,9 +63,9 @@ export default async function LessonPage({
 
   const { data: questions } = await supabase
     .from("Question")
-    .select("id, titulo, contenido, fechaCreacion, resuelta, videoSegundo, User!inner(nombre)")
-    .eq("courseId", courseId)
-    .order("fechaCreacion", { ascending: false });
+    .select("id, titulo, contenido, fechacreacion, resuelta, videoSegundo, User!inner(nombre)")
+    .eq("courseid", courseId)
+    .order("fechacreacion", { ascending: false });
 
   // Simulate checked lessons based on current progress percentage
   const totalLessons = lessons?.length ?? 0;

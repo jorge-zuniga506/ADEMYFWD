@@ -63,9 +63,11 @@ Input.displayName = "Input";
 export function Badge({
   children,
   variant = "default",
+  className = "",
 }: {
   children: React.ReactNode;
   variant?: "default" | "fwd" | "success" | "warning";
+  className?: string;
 }) {
   const styles = {
     default:
@@ -76,7 +78,7 @@ export function Badge({
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[variant]} ${className}`}
     >
       {children}
     </span>
