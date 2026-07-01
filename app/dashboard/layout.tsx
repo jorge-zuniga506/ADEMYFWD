@@ -118,7 +118,7 @@ export default async function DashboardRootLayout({
       </aside>
 
       <div className="min-w-0 flex-1">{children}</div>
-      <AiSupportChat />
+      <AiSupportChat userRol={rol ?? "ESTUDIANTE"} />
     </div>
   );
 }

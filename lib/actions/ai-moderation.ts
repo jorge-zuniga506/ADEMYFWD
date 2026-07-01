@@ -183,35 +183,36 @@ export async function askAiSupportAction(
   // Obtener rol del usuario para el control de acceso
   const { data: perfil } = await supabase
     .from("User")
-    .select("rol")
+    .select("rol, nombre")
     .eq("id", user.id)
     .single();
 
   const rol = perfil?.rol || "ESTUDIANTE";
+  const nombre = perfil?.nombre || "Usuario";
 
   // Definición del mapa de enlaces de la plataforma según el rol
   const enlacesEstudiante = `
-- **Mis Cursos / Aula Virtual**: [/dashboard/student](file:///dashboard/student)
-- **Membresía VIP (U-Forward+)**: [/dashboard/student/membresia](file:///dashboard/student/membresia)
-- **Certificados obtenidos**: [/dashboard/student/certificados](file:///dashboard/student/certificados)
-- **Foro de Consultas Q&A**: [/dashboard/student/qanda](file:///dashboard/student/qanda)
-- **Configuración de Cuenta**: [/dashboard/student/configuracion](file:///dashboard/student/configuracion)
-- **Catálogo General de Cursos**: [/cursos](file:///cursos)
-- **Recursos Gratuitos**: [/recursos](file:///recursos)`;
+- **Mis Cursos / Aula Virtual**: https://u-forward.vercel.app/dashboard/student
+- **Membresía VIP (U-Forward+)**: https://u-forward.vercel.app/dashboard/student/membresia
+- **Certificados obtenidos**: https://u-forward.vercel.app/dashboard/student/certificados
+- **Foro de Consultas Q&A**: https://u-forward.vercel.app/dashboard/student/qanda
+- **Configuración de Cuenta**: https://u-forward.vercel.app/dashboard/student/configuracion
+- **Catálogo General de Cursos**: https://u-forward.vercel.app/cursos
+- **Recursos Gratuitos**: https://u-forward.vercel.app/recursos`;
 
   const enlacesInstructor = `
-- **Panel de Instructor (Gestión de Cursos)**: [/dashboard/instructor](file:///dashboard/instructor)
-- **Aula Virtual del Instructor**: [/dashboard/instructor/aula](file:///dashboard/instructor/aula)
-- **Verificación VIP FWD (Títulos)**: [/dashboard/instructor/vip-fwd](file:///dashboard/instructor/vip-fwd)
-- **Wallet (Ingresos y Retiros)**: [/dashboard/instructor/wallet](file:///dashboard/instructor/wallet)
-- **Configuración de Perfil**: [/dashboard/instructor/perfil](file:///dashboard/instructor/perfil)`;
+- **Panel de Instructor**: https://u-forward.vercel.app/dashboard/instructor
+- **Aula Virtual del Instructor**: https://u-forward.vercel.app/dashboard/instructor/aula
+- **Verificación VIP FWD (Títulos)**: https://u-forward.vercel.app/dashboard/instructor/vip-fwd
+- **Wallet (Ingresos y Retiros)**: https://u-forward.vercel.app/dashboard/instructor/wallet
+- **Configuración de Perfil**: https://u-forward.vercel.app/dashboard/instructor/perfil`;
 
   const enlacesAdmin = `
-- **Auditoría de Cursos**: [/dashboard/admin/cursos](file:///dashboard/admin/cursos)
-- **Gestión de Membresías**: [/dashboard/admin/membresias](file:///dashboard/admin/membresias)
-- **Panel Financiero y Consumo de IA**: [/dashboard/admin/financiero](file:///dashboard/admin/financiero)
-- **Verificación de Instructores**: [/dashboard/admin/verificacion](file:///dashboard/admin/verificacion)
-- **Gestión de Usuarios**: [/dashboard/admin/usuarios](file:///dashboard/admin/usuarios)`;
+- **Auditoría de Cursos**: https://u-forward.vercel.app/dashboard/admin/cursos
+- **Gestión de Membresías**: https://u-forward.vercel.app/dashboard/admin/membresias
+- **Panel Financiero**: https://u-forward.vercel.app/dashboard/admin/financiero
+- **Verificación de Instructores**: https://u-forward.vercel.app/dashboard/admin/verificacion
+- **Gestión de Usuarios**: https://u-forward.vercel.app/dashboard/admin/usuarios`;
 
   let enlacesPermitidos = enlacesEstudiante;
   if (rol === "INSTRUCTOR") {
@@ -220,20 +221,86 @@ export async function askAiSupportAction(
     enlacesPermitidos = `${enlacesEstudiante}\n${enlacesInstructor}\n${enlacesAdmin}`;
   }
 
+  // --- Para ADMIN: obtener métricas reales en tiempo real ---
+  let contextoAdmin = "";
+  if (rol === "ADMIN") {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const ayer = new Date(hoy);
+    ayer.setDate(ayer.getDate() - 1);
+
+    const [
+      { count: usuariosHoy },
+      { count: usuariosAyer },
+      { count: cursosPublicados },
+      { count: cursosRevision },
+      { count: emailsHoy },
+      { count: aiHoy },
+      { count: totalUsuarios },
+      { count: membresiaActivas },
+    ] = await Promise.all([
+      supabase.from("User").select("*", { count: "exact", head: true }).gte("createdAt", hoy.toISOString()),
+      supabase.from("User").select("*", { count: "exact", head: true }).gte("createdAt", ayer.toISOString()).lt("createdAt", hoy.toISOString()),
+      supabase.from("Course").select("*", { count: "exact", head: true }).eq("estado", "PUBLICADO"),
+      supabase.from("Course").select("*", { count: "exact", head: true }).eq("estado", "EN_REVISION"),
+      (supabase as any).from("EmailLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
+      (supabase as any).from("AiLog").select("*", { count: "exact", head: true }).gte("fecha", hoy.toISOString()),
+      supabase.from("User").select("*", { count: "exact", head: true }),
+      supabase.from("Enrollment").select("*", { count: "exact", head: true }),
+    ]);
+
+    contextoAdmin = `
+=== MÉTRICAS REALES DE LA PLATAFORMA (DATOS EN VIVO) ===
+📅 Fecha actual: ${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+
+👥 USUARIOS:
+- Nuevos usuarios HOY: ${usuariosHoy ?? 0}
+- Nuevos usuarios AYER: ${usuariosAyer ?? 0}
+- Total de usuarios registrados: ${totalUsuarios ?? 0}
+
+📚 CURSOS:
+- Cursos publicados activos: ${cursosPublicados ?? 0}
+- Cursos en revisión pendientes: ${cursosRevision ?? 0}
+
+📧 CORREOS (Gmail SMTP):
+- Correos enviados hoy: ${emailsHoy ?? 0} / 500 (límite diario)
+
+🤖 IA (OpenRouter/Gemini):
+- Peticiones de IA hoy: ${aiHoy ?? 0} / 30 por usuario (límite configurado)
+
+🎓 INSCRIPCIONES:
+- Total de inscripciones activas: ${membresiaActivas ?? 0}
+=== FIN DE MÉTRICAS ===
+
+Usa estos datos reales para responder cualquier pregunta del administrador sobre el estado de la plataforma.`;
+  }
+
   const systemPrompt = {
     role: "system" as const,
-    content: `Eres Ademy, la asistente de soporte inteligente oficial de U-Forward Academy (ADEMYFWD).
-El usuario que está hablando contigo tiene el rol de: **${rol}**.
-
-Enlaces oficiales que debes proporcionarle al usuario en formato Markdown si los solicita o si encajan con su duda:
+    content: `Eres Ademy, la asistente inteligente oficial de U-Forward Academy. Estás hablando con **${nombre}** quien tiene el rol de **${rol}**.
+${contextoAdmin}
+ENLACES DISPONIBLES PARA ESTE ROL:
 ${enlacesPermitidos}
 
-NORMAS DE SEGURIDAD ESTRICTAS POR PERFIL DE ACCESO:
-1. El rol actual del usuario es **${rol}**. Si el usuario tiene rol "ESTUDIANTE", bajo ninguna circunstancia le proporciones enlaces o instrucciones de "INSTRUCTOR" o "ADMIN". Si intenta pedirlos o pregunta por ellos, dile educadamente que no tienes autorización para proporcionarle accesos o información fuera de su perfil actual.
-2. Si un usuario con rol "INSTRUCTOR" te pide enlaces de "ADMIN" (como auditoría o financiero), niégalo amablemente.
-3. Resuelve dudas sobre inscripciones, Stripe, certificados al 100% y foro de dudas.
-4. Sé sumamente servicial, amable y usa un tono tecnológico y profesional.
-5. Mantén las respuestas claras y concisas (máximo 120 palabras).`
+NORMAS DE COMPORTAMIENTO:
+${rol === "ADMIN"
+  ? `- Eres el asistente personal de datos del administrador. Responde preguntas sobre usuarios, cursos, correos, consumo de IA y finanzas usando las métricas reales de arriba.
+- Puedes hacer cálculos comparativos (ej: crecimiento de usuarios, porcentaje de consumo de Gmail).
+- Sé directo, preciso y ejecutivo. El administrador necesita datos, no rodeos.
+- Proporciona el enlace exacto cuando el admin necesite ir a una sección.`
+  : rol === "INSTRUCTOR"
+  ? `- Ayuda al instructor con la gestión de sus cursos, el aula virtual, sus ingresos y la verificación VIP.
+- Proporciona el enlace directo cuando el instructor lo necesite.
+- Si te pide datos de administración (financiero, usuarios), dile amablemente que esa sección es solo para administradores.`
+  : `- Ayuda al estudiante con sus cursos, certificados, membresía y el foro de dudas.
+- Proporciona el enlace directo cuando el estudiante lo necesite.
+- NUNCA le des enlaces ni información de paneles de Instructor o Admin.
+- Si te pide accesos fuera de su perfil, explícale amablemente que no tienes acceso a esa información.`
+}
+
+- Responde en español, de forma amable y profesional.
+- Sé conciso (máximo 130 palabras por respuesta).
+- Cuando menciones un enlace, usa el formato Markdown: [Nombre del enlace](URL).`
   };
 
   const messages = [systemPrompt, ...chatHistory];
@@ -245,3 +312,4 @@ NORMAS DE SEGURIDAD ESTRICTAS POR PERFIL DE ACCESO:
     throw new Error(err.message || "Error del asistente de soporte");
   }
 }
+
