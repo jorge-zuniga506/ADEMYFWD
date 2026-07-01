@@ -2,7 +2,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
-import { notifyAdmin } from "@/lib/email";
+import { notifyAdminWithTemplate } from "@/lib/email";
 
 function getServiceClient() {
   return createServiceClient(
@@ -71,12 +71,15 @@ export async function POST(request: Request) {
         service.from("Membership").select("nombre, precio").eq("id", membershipId).single(),
       ]);
 
-      await notifyAdmin(
+      await notifyAdminWithTemplate(
         `Nueva membresía VIP: ${membership?.nombre ?? membershipId}`,
-        `<p>Usuario: ${userData?.nombre} (${userData?.email})</p>
-         <p>Plan: ${membership?.nombre}</p>
-         <p>Precio: $${membership?.precio}/mes</p>
-         <p>Fecha: ${new Date().toISOString()}</p>`
+        "Nueva Suscripción VIP",
+        [
+          { label: "Usuario", value: `${userData?.nombre} (${userData?.email})` },
+          { label: "Plan", value: membership?.nombre ?? "N/A" },
+          { label: "Precio", value: `$${membership?.precio}/mes` },
+          { label: "Fecha", value: new Date().toLocaleString() },
+        ]
       );
       break;
     }

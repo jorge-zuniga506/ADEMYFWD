@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BookOpen, PlayCircle, Archive, RotateCcw, Award } from "lucide-react";
 import { toggleArchiveCourse } from "@/lib/actions/student";
 import Link from "next/link";
+import { showAlert } from "@/lib/alert";
 
 interface Course {
   id: string;
@@ -44,7 +45,7 @@ export default function StudentCursosTabs({
         prev.map(e => (e.courseId === courseId ? { ...e, archivado: archive } : e))
       );
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      showAlert({ title: "Error", text: err.message, icon: "error" });
     }
   };
 

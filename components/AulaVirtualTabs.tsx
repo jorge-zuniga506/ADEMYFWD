@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { Users, Video, Megaphone, MessageSquare, ExternalLink, Calendar, CheckCircle2, Clock } from "lucide-react";
 import { saveLiveMeet, sendAnnouncement, generateGoogleMeetLink } from "@/lib/actions/instructor";
 import { Button } from "./ui";
+import { showAlert } from "@/lib/alert";
 
 interface Course {
   id: string;
@@ -215,10 +216,14 @@ export default function AulaVirtualTabs({
                 const formData = new FormData(form);
                 try {
                   await saveLiveMeet(formData);
-                  alert("Clase en vivo configurada con éxito!");
+                  await showAlert({
+                    title: "¡Configuración Exitosa!",
+                    text: "Clase en vivo configurada con éxito.",
+                    icon: "success"
+                  });
                   window.location.reload();
                 } catch (err: any) {
-                  alert(`Error: ${err.message}`);
+                  showAlert({ title: "Error", text: err.message, icon: "error" });
                 }
               }}>
                 <div className="flex flex-col gap-1">
@@ -254,7 +259,11 @@ export default function AulaVirtualTabs({
                       onClick={async () => {
                         const dateVal = meetDateRef.current?.value;
                         if (!dateVal) {
-                          alert("Por favor, selecciona primero la fecha y hora de la mentoría.");
+                          showAlert({
+                            title: "Atención",
+                            text: "Por favor, selecciona primero la fecha y hora de la mentoría.",
+                            icon: "warning"
+                          });
                           return;
                         }
                         try {
@@ -263,13 +272,25 @@ export default function AulaVirtualTabs({
                           if (res.success && meetLinkRef.current) {
                             meetLinkRef.current.value = res.link;
                             if (res.isSimulated) {
-                              alert(`Enlace generado con éxito!\n\nNota: ${res.message}`);
+                              showAlert({
+                                title: "Enlace Generado",
+                                text: `Enlace generado con éxito.\n\nNota: ${res.message}`,
+                                icon: "success"
+                              });
                             } else {
-                              alert("¡Llamada de Google Meet generada de forma real y exitosa!");
+                              showAlert({
+                                title: "¡Llamada Generada!",
+                                text: "¡Llamada de Google Meet generada de forma real y exitosa!",
+                                icon: "success"
+                              });
                             }
                           }
                         } catch (err: any) {
-                          alert("Error al generar enlace: " + err.message);
+                          showAlert({
+                            title: "Error",
+                            text: "Error al generar enlace: " + err.message,
+                            icon: "error"
+                          });
                         } finally {
                           setIsGenerating(false);
                         }

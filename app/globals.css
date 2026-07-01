@@ -62,3 +62,19 @@ body {
     color: var(--color-primary-200);
   }
 }
+
+/* Estilos personalizados y glassmorphism para SweetAlert2 */
+.swal2-container.swal2-backdrop-show {
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.swal2-popup {
+  border-color: #27272a !important;
+  font-family: var(--font-sans) !important;
+}
+
+.swal2-icon {
+  margin-top: 15px !important;
+}
+

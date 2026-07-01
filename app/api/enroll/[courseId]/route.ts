@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { notifyAdmin } from "@/lib/email";
+import { notifyAdminWithTemplate } from "@/lib/email";
 
 function getServiceClient() {
   return createServiceClient(
@@ -77,12 +77,15 @@ export async function POST(
           .eq("id", user.id)
           .single();
 
-        await notifyAdmin(
+        await notifyAdminWithTemplate(
           `Inscripción Pro Max gratuita: ${course.titulo}`,
-          `<p>Usuario: ${userData?.nombre} (${userData?.email})</p>
-           <p>Curso: ${course.titulo}</p>
-           <p>Precio de lista: $${course.precio} (cubierto por membresía Pro Max)</p>
-           <p>Fecha: ${new Date().toISOString()}</p>`
+          "Nueva Inscripción (Plan Pro Max)",
+          [
+            { label: "Usuario", value: `${userData?.nombre} (${userData?.email})` },
+            { label: "Curso", value: course.titulo },
+            { label: "Precio", value: `$${course.precio} (Cubierto por membresía)` },
+            { label: "Fecha", value: new Date().toLocaleString() },
+          ]
         );
       }
     } catch (splitErr) {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { processPayout } from "@/lib/actions/admin";
 import { CreditCard, Check, X, Clock, HelpCircle } from "lucide-react";
 import { Button } from "./ui";
+import { showAlert } from "@/lib/alert";
 
 interface PayoutRequest {
   id: string;
@@ -31,7 +32,7 @@ export default function PayoutList({ initialPayouts }: { initialPayouts: PayoutR
       setActionMsg("¡Solicitud procesada con éxito!");
       setTimeout(() => setActionMsg(""), 5000);
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      showAlert({ title: "Error", text: err.message, icon: "error" });
     }
   };
 
