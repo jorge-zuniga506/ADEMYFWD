@@ -2,6 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { DollarSign, TrendingUp, Users, ShieldCheck, Mail, Cpu } from "lucide-react";
 import PayoutList from "@/components/PayoutList";
 
+// Forzar renderizado dinámico para que los datos se lean en tiempo real en producción
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function FinancieroPage() {
   const supabase = await createClient();
 
